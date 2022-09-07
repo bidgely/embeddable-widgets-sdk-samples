@@ -1,0 +1,272 @@
+<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bidgely Widget tester</title><link rel="preconnect" href="https://static.bidgely.com"><link rel="preconnect" href="https://fonts.gstatic.com"><script type="text/javascript">window["bgl-page-load-ts"]=Date.now()</script><script>window.addEventListener('bgl-event-onlocationupdate', function(event) {
+      console.log('Navigation made by Bidgely Widget', event.detail.data)
+    }, false)
+
+    window.setTags = function(tags) {
+      localStorage.setItem('storedTags', tags.join(','))
+    }
+
+    var instanceId;
+
+    window.onload = function () {
+      
+      const searchParams      = new URLSearchParams(window.location.search)
+      const localStorageInfo  = JSON.parse(localStorage.getItem('bidgelySdkInitInfo') || '{}')
+
+      const clientId    = searchParams.get('client_id') || localStorageInfo.clientId
+      const apiUrl      = searchParams.get('api_url') || localStorageInfo.apiUrl
+      const aesKey      = searchParams.get('aes_key') || localStorageInfo.aesKey
+      const iv          = searchParams.get('iv') || localStorageInfo.iv
+      const accessToken = searchParams.get('access_token') || localStorageInfo.accessToken
+      const userId      = searchParams.get('user_id') || localStorageInfo.userId
+      const csrId       = searchParams.get('csr_id') || localStorageInfo.csrId
+      const accountType = searchParams.get('account_type') || localStorageInfo.accountType
+      const fuelType    = searchParams.get('fuel_type') || localStorageInfo.fuelType
+
+      if (clientId) document.getElementById('client-id').value = clientId
+      if (apiUrl) document.getElementById('api-endpoint').value = apiUrl
+      if (aesKey) document.getElementById('aes-key').value = aesKey
+      if (iv) document.getElementById('iv').value = iv
+      if (accessToken) document.getElementById('access-token').value = accessToken
+      if (userId) document.getElementById('user-id').value = userId
+      if (csrId) document.getElementById('csr-id').value = csrId
+      if (accountType) document.getElementById('account-type').value = accountType
+      if (fuelType) document.getElementById('fuel-type').value = fuelType
+
+      document.getElementById("checkbox-container").style.display = 'block'
+      document.getElementById("render-container").style.display = 'none'
+      initWidgets()
+    }
+
+    const widgetTags = [
+      'bidgely-home-survey',
+      'bidgely-usage-insights', 
+      'bidgely-similar-homes-insights', 
+      'bidgely-bill-itemisation', 
+      'bidgely-rate-plan-comparison', 
+      'bidgely-next-bill-projection', 
+      'bidgely-recommendation-top-tips', 
+      'bidgely-recommendation-tips',
+      'bidgely-high-bill-analyser'
+    ]
+    
+    function toggleTagContainer() {
+
+      const renderWidgetsImmediate = document.querySelector('input[name="render"]:checked').value === 'No'
+
+      if (renderWidgetsImmediate) {
+        document.getElementById("checkbox-container").style.display = 'block'
+        document.getElementById("render-container").style.display = 'none'
+        initWidgets()
+
+      } else {
+        document.getElementById("checkbox-container").style.display = 'none'
+        document.getElementById("render-container").style.display = 'block'
+        clearContainer('widget-container')
+      }
+    }
+
+    function clearContainer(cont) {
+
+      const container = document.body.getElementsByClassName(cont)[0]
+      container.innerHTML = ''
+
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
+    }
+
+    function showRenderContainer() {
+      
+      document.getElementById("render-container").style.display = 'block'
+      
+      const container = document.body.getElementsByClassName('render-container-widgets')[0]
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
+
+      for (let i=0; i<widgetTags.length; i++) {
+        let tag = widgetTags[i]
+        var checkbox = document.createElement('input');
+            checkbox.type = 'radio';
+            checkbox.id = tag;
+            checkbox.name = 'renderedWidget';
+            checkbox.value = tag;
+        var label = document.createElement('label');
+            label.for = tag
+            label.innerHTML = tag
+            label.className = 'checkbox-label'
+            container.appendChild(checkbox)
+            container.appendChild(label)
+      }
+    }
+
+    function renderWidget() {
+
+      const widgetId = document.querySelector('input[name="renderedWidget"]:checked').value
+      if (!widgetId) return
+
+      const configsStr = document.getElementById('configs').value
+      const translationsStr = document.getElementById('translations').value
+
+      let configs = {}
+      if (configsStr.length) {
+        configs = JSON.parse(JSON.parse(configsStr))
+      }
+
+      let translations = {}
+      if (translationsStr.length) {
+        translations = JSON.parse(JSON.parse(translationsStr))
+      }
+
+      clearContainer('widget-container')
+      const widgetcontainer = document.body.getElementsByClassName('widget-container')[0]
+      const ele = document.createElement('div')
+      ele.setAttribute('class', 'widget')
+      ele.innerHTML = '<' + widgetId + '>' + '</' + widgetId + '>'
+      widgetcontainer.appendChild(ele)
+
+      const renderParams = {instanceId, widgetId, configs, translations}
+
+      BidgelyWebSdk.renderWidget(renderParams, (data) => {
+        console.log('BidgelyWebSdk renderWidget: ', data);
+      })
+    }
+
+    function initialize() {
+
+      const statusBox = document.getElementById('initialise-status')
+      statusBox.innerHTML = `Initializing...`
+
+      const renderWidgetsImmediate = document.querySelector('input[name="render"]:checked').value === 'No'
+      
+      const client_id = document.getElementById('client-id').value
+      const api_url = document.getElementById('api-endpoint').value 
+      const aesKey = document.getElementById('aes-key').value
+      const ivStr = document.getElementById('iv').value
+      const accessToken = document.getElementById('access-token').value
+      const utilityAccountIdentifier = document.getElementById('user-id').value
+      const csr_id = document.getElementById('csr-id').value
+      const accountType = document.getElementById('account-type').value
+      const fuelType = document.getElementById('fuel-type').value
+
+      const payload = { utilityAccountIdentifier, fuelType, accountType, accessToken }
+
+      try {
+        const ivArr = []
+        for (let i in ivStr) {
+          ivArr.push(ivStr.charCodeAt(i))
+        }
+
+        const iv          = new Uint8Array(ivArr),
+              privKey     = btoa(aesKey) 
+
+        const SYM_ALGO    = { name: 'AES-CBC', length: 256, iv: iv },
+              privUint8   = Uint8Array.from(atob(privKey), (c) => c.charCodeAt(0)),
+              encStr      = new window.TextEncoder('utf-8').encode(JSON.stringify(payload))
+
+        const palette = {
+          // primary : {
+          //   200 : '#FFEDED',
+          //   300 : '#FB8888',
+          //   400 : '#F71818',
+          //   500 : '#EC0202',
+          //   600 : '#BB0606',
+          // },
+          // primary : {
+          //   200 : '#D7FCE4',
+          //   300 : '#71F19F',
+          //   400 : '#23DC65',
+          //   500 : '#14843C',
+          //   600 : '#0D5627',
+          // }
+        }
+
+        crypto.subtle.importKey('raw', privUint8, SYM_ALGO , false, ['encrypt', 'decrypt']).then(key => {
+          
+          window.crypto.subtle.encrypt(SYM_ALGO, key, encStr).then(encPayload => {
+
+            const encB64 = btoa(String.fromCharCode(...new Uint8Array(encPayload)))
+            const initParams = { client_id, csr_id, api_url, payload : encB64, palette, renderWidgetsImmediate }
+
+            BidgelyWebSdk.initialize(BidgelyWebSdk.RUN_MODE.PERF, initParams, (data) => {
+              console.log('BidgelyWebSdk initialize: ', data);
+
+              if (data.messageType == 'SUCCESS') {
+
+                instanceId = data.instanceId
+
+                const localStorageInfo = JSON.parse(localStorage.getItem('bidgelySdkInitInfo') || '{}')
+                localStorageInfo.clientId = client_id
+                localStorageInfo.apiUrl = api_url
+                localStorageInfo.aesKey = aesKey
+                localStorageInfo.iv = ivStr
+                localStorageInfo.accessToken = accessToken
+                localStorageInfo.userId = utilityAccountIdentifier
+                localStorageInfo.csrId = csr_id
+                localStorageInfo.accountType = accountType
+                localStorageInfo.fuelType = fuelType
+                localStorage.setItem('bidgelySdkInitInfo', JSON.stringify(localStorageInfo))
+
+                if (!renderWidgetsImmediate) showRenderContainer()
+              }
+
+              if (data.messageType == 'SUCCESS' || data.messageType == 'ERROR') {
+                const statusBox = document.getElementById('initialise-status')
+                statusBox.innerHTML = `Initialized : ${JSON.stringify(data)}`
+              }
+            })
+          }) 
+        })
+      } catch(e) {
+        const statusBox = document.getElementById('initialise-status')
+        statusBox.innerHTML = `Error : ${e.message}`
+      }
+    }
+
+    function addWidgetsToCheckboxContainer() {
+
+      const checkboxContainer = document.body.getElementsByClassName('checkbox-container')[0]
+      
+      const storedTagState = JSON.parse(localStorage.getItem('tagCheckedState') || '{}')
+      for (let i=0; i<widgetTags.length; i++) {
+        let tag = widgetTags[i]
+        var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = tag;
+            checkbox.name = tag;
+            checkbox.value = tag;
+            checkbox.checked = storedTagState[tag] !== undefined ? storedTagState[tag] : true 
+            checkbox.onclick = function(event) {
+              const storedTagState = JSON.parse(localStorage.getItem('tagCheckedState') || '{}')
+              storedTagState[event.target.id] = event.target.checked
+              localStorage.setItem('tagCheckedState', JSON.stringify(storedTagState))
+            }
+        var label = document.createElement('label');
+            label.for = tag
+            label.innerHTML = tag
+            label.className = 'checkbox-label'
+        checkboxContainer.appendChild(checkbox)
+        checkboxContainer.appendChild(label)
+      }
+    }
+
+    function initWidgets() {
+
+      clearContainer('widget-container')
+      clearContainer('checkbox-container')
+
+      addWidgetsToCheckboxContainer()
+      
+      const storedTagState  = JSON.parse(localStorage.getItem('tagCheckedState') || '{}')
+      const container       = document.body.getElementsByClassName('widget-container')[0]
+      
+      for (let i=0; i<widgetTags.length; i++) {
+        let tag = widgetTags[i]
+        if (storedTagState[tag] !== undefined && storedTagState[tag] == false) continue
+        const ele = document.createElement('div')
+        ele.setAttribute('class', 'widget')
+        ele.innerHTML = '<' + tag + '>' + '</' + tag + '>'
+        container.appendChild(ele)
+      }
+    }</script><style>*{box-sizing:border-box}body{background-color:#dcdcdc;padding:0 15px;margin:0;width:100%}.heading{background-color:#fff;padding:10px 20px;font-size:22px}.widget-container{max-width:1080px;margin:0 10px;display:flex;flex-wrap:wrap;justify-content:center}@media only screen and (min-width:960px){.widget-container{width:100%;margin:auto}}.widget{width:100%;margin:2% 0;height:auto}.form-container{background-color:#fff;padding:20px}.form-row{display:flex}.checkbox-container{background-color:#fff;padding:20px}.render-container{background-color:#fff;padding:20px;display:none}.checkbox-label{font-size:16px;margin-right:10px}.input-cont{padding:5px;display:flex;flex-direction:row;align-items:center}.input-field{padding:10px;width:calc(100% - 190px)}.label{min-width:150px}.initialize-button{margin-top:20px;padding:10px;min-width:150px}.initialise-info{display:flex;align-items:center}.initialise-status{margin-left:20px}.render-info{margin-top:20px;display:flex;flex-direction:row}.render-options{display:flex;flex-direction:row}.translations{width:300px;margin-top:10px}.config-label{min-width:100px;margin-right:10px;display:inline-block}</style><link href="./static/css/main.aed15453.css" rel="stylesheet"><script src="./bundle.6fce936d.js"></script></head><body><div class="heading">Bidgely Web Embeddable Widgets SDK - V2</div><div class="form-container"><div class="input-cont"><span class="label">Oauth 2.0 Client Id : </span><input class="input-field" placeholder=" Oauth 2.0 Client Id" name="client-id" id="client-id"></div><div class="input-cont"><span class="label">BE API Endpoint : </span><input class="input-field" placeholder="BE API Endpoint" name="api-endpoint-id" id="api-endpoint"></div><div class="input-cont"><span class="label">Access token : </span><input class="input-field" placeholder="Access token" name="token-id" id="access-token"></div><div class="input-cont"><span class="label">AES Key : </span><input class="input-field" placeholder="AES Key" name="aes-id" id="aes-key"></div><div class="input-cont"><span class="label">IV : </span><input class="input-field" placeholder="IV" name="iv" id="iv"></div><div class="input-cont"><span class="label">Partner User Id: </span><input class="input-field" placeholder="Partner User Id" name="user-id" id="user-id"></div><div class="input-cont"><span class="label">CSR Id: </span><input class="input-field" placeholder="CSR Id" name="csr-id" id="csr-id"></div><div class="input-cont"><span class="label">Fuel Type: </span><input class="input-field" placeholder="Fuel Type" name="fuel" id="fuel-type"></div><div class="input-cont"><span class="label">Account Type: </span><input class="input-field" placeholder="Account Type" name="account" id="account-type"></div><div class="render-info"><div class="render-label">Render Widgets with Runtime Configs / Translations</div><div class="render-options"><input type="radio" id="Yes" name="render" value="Yes" onchange="toggleTagContainer()"> <label for="html">Yes</label> <input type="radio" id="No" name="render" value="No" checked="checked" onchange="toggleTagContainer()"> <label for="css">No</label></div></div><div id="checkbox-container" class="checkbox-container"></div><div class="initialise-info"><button class="initialize-button" onclick="initialize()">Initialize</button><div id="initialise-status" class="initialise-status"></div></div></div><div id="render-container" class="render-container"><div class="render-container-widgets"></div><div class="config-label">Configs</div><textarea id="configs" class="translations"></textarea><br><div class="config-label">Translations</div><textarea id="translations" class="translations"></textarea> <button class="initialize-button" onclick="renderWidget()">Render</button></div><div class="widget-container"></div></body></html>
