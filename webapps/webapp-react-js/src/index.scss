@@ -11,3 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+// importing custom styles here
+
+@import '@coreui/coreui/dist/css/coreui.min.css';
