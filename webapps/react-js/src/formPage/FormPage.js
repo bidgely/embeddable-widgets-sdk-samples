@@ -110,7 +110,7 @@ function FormPage(props) {
             width={100}
             height={50}
           />
-          <CHeaderBrand href="/">Bidgely Web Widget SDK</CHeaderBrand>
+          <CHeaderBrand href="/" className="bold-weight">Web Widget SDK Demo</CHeaderBrand>
           <CHeaderToggler onClick={() => setVisible(!visible)} />
           <CCollapse className="header-collapse" visible={visible}>
             <CHeaderNav>
