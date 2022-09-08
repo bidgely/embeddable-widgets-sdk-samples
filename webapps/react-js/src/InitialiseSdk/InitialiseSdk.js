@@ -6,6 +6,7 @@ import FormPage from "../formPage/FormPage";
 import { useHistory } from "react-router-dom";
 
 function InitialiseSdk(props) {
+  console.log(props)
   const history = useHistory();
 
   const client_id = props.oauthClient;
