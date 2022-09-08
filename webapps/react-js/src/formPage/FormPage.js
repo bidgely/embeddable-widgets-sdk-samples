@@ -16,6 +16,7 @@ import {
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import '../formPage/Formpage.css';
 
 function FormPage(props) {
   console.log({ props });
@@ -86,7 +87,7 @@ function FormPage(props) {
   };
 
   return (
-    <div>
+    <div className="sdk-input-form">
       <CForm
         className="g-3 needs-validation"
         noValidate
@@ -110,142 +111,183 @@ function FormPage(props) {
           </CCol>
         </CRow>
 
-        <CCol md={4}>
-          <CFormInput
-            type="text"
-            defaultValue={apiEndPoint}
-            feedbackValid="Looks good!"
-            id={apiEndPoint}
-            label="Api End Point"
-            onChange={(e) => {
-              setApiEndPoint(e.target.value);
-              props.onChangeField("CHANGE_FIELD2", e.target.value);
-              setInitWidget(false);
-            }}
-            required
-          />
-        </CCol>
-        <CCol md={4}>
-          <CFormInput
-            type="text"
-            defaultValue={accessToken}
-            feedbackValid="Looks good!"
-            id={accessToken}
-            label="Access Token"
-            onChange={(e) => {
-              setInitWidget(false);
-              setAccessToken(e.target.value);
-              props.onChangeField("CHANGE_FIELD3", e.target.value);
-            }}
-            required
-          />
-        </CCol>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            Api End Point *:
+          </CFormLabel>
+          <CCol sm={5}>
+            <CFormInput
+              type="text"
+              defaultValue={apiEndPoint}
+              feedbackValid="Looks good!"
+              id={apiEndPoint}
+              //label="Api End Point"
+              onChange={(e) => {
+                setApiEndPoint(e.target.value);
+                props.onChangeField("CHANGE_FIELD2", e.target.value);
+                setInitWidget(false);
+              }}
+              required
+            />
+          </CCol>
+        </CRow>
 
-        <CCol md={4}>
-          <CFormInput
-            type="text"
-            defaultValue={aesKey}
-            feedbackValid="Looks good!"
-            id={aesKey}
-            label="Aes Key"
-            onChange={(e) => {
-              setInitWidget(false);
-              setAesKey(e.target.value);
-              props.onChangeField("CHANGE_FIELD7", e.target.value);
-            }}
-            required
-          />
-        </CCol>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            Access Token *:
+          </CFormLabel>
+          <CCol md={4}>
+            <CFormInput
+              type="text"
+              defaultValue={accessToken}
+              feedbackValid="Looks good!"
+              id={accessToken}
+              //label="Access Token"
+              onChange={(e) => {
+                setInitWidget(false);
+                setAccessToken(e.target.value);
+                props.onChangeField("CHANGE_FIELD3", e.target.value);
+              }}
+              required
+            />
+          </CCol>
+        </CRow>
 
-        <CCol md={4}>
-          <CFormInput
-            type="text"
-            defaultValue={iv}
-            feedbackValid="Looks good!"
-            id={iv}
-            label="IV"
-            onChange={(e) => {
-              setInitWidget(false);
-              setIv(e.target.value);
-              props.onChangeField("CHANGE_FIELD8", e.target.value);
-            }}
-            required
-          />
-        </CCol>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            Aes Key *:
+          </CFormLabel>
+          <CCol md={4}>
+            <CFormInput
+              type="text"
+              defaultValue={aesKey}
+              feedbackValid="Looks good!"
+              id={aesKey}
+              //label="Aes Key"
+              onChange={(e) => {
+                setInitWidget(false);
+                setAesKey(e.target.value);
+                props.onChangeField("CHANGE_FIELD7", e.target.value);
+              }}
+              required
+            />
+          </CCol>
+        </CRow>
 
-        <CCol md={4}>
-          <CFormInput
-            type="text"
-            defaultValue={userId}
-            feedbackValid="Looks good!"
-            id={userId}
-            label="Partner User Id"
-            onChange={(e) => {
-              setInitWidget(false);
-              setUserId(e.target.value);
-              props.onChangeField("CHANGE_FIELD9", e.target.value);
-            }}
-            required
-          />
-        </CCol>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            IV *:
+          </CFormLabel>
+          <CCol md={4}>
+            <CFormInput
+              type="text"
+              defaultValue={iv}
+              feedbackValid="Looks good!"
+              id={iv}
+              //label="IV"
+              onChange={(e) => {
+                setInitWidget(false);
+                setIv(e.target.value);
+                props.onChangeField("CHANGE_FIELD8", e.target.value);
+              }}
+              required
+            />
+          </CCol>
+        </CRow>
 
-        <CCol md={4}>
-          <CFormInput
-            type="text"
-            defaultValue={csrId}
-            feedbackValid="Looks good!"
-            id={csrId}
-            label="CSR Id"
-            onChange={(e) => {
-              setInitWidget(false);
-              setCsrId(e.target.value);
-              props.onChangeField("CHANGE_FIELD4", e.target.value);
-            }}
-            required
-          />
-        </CCol>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            Partner User Id *:
+          </CFormLabel>
+          <CCol md={4}>
+            <CFormInput
+              type="text"
+              defaultValue={userId}
+              feedbackValid="Looks good!"
+              id={userId}
+              //label="Partner User Id"
+              onChange={(e) => {
+                setInitWidget(false);
+                setUserId(e.target.value);
+                props.onChangeField("CHANGE_FIELD9", e.target.value);
+              }}
+              required
+            />
+          </CCol>
+        </CRow>
 
-        <CCol md={3}>
-          <CFormSelect
-            aria-describedby="validationCustom04Feedback"
-            feedbackInvalid="Please select a valid fuel type."
-            id="validationCustom04"
-            label="Fuel Type"
-            value={fuelType}
-            onChange={(e) => {
-              setInitWidget(false);
-              setFuelType(e.target.value);
-              props.onChangeField("CHANGE_FIELD5", e.target.value);
-            }}
-            required
-          >
-            <option></option>
-            <option value="ELECTRIC">ELECTRIC</option>
-            <option value="GAS">GAS</option>
-            <option value="WATER">WATER</option>
-          </CFormSelect>
-        </CCol>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            CSR Id *:
+          </CFormLabel>
+          <CCol md={4}>
+            <CFormInput
+              type="text"
+              defaultValue={csrId}
+              feedbackValid="Looks good!"
+              id={csrId}
+              //label="CSR Id"
+              onChange={(e) => {
+                setInitWidget(false);
+                setCsrId(e.target.value);
+                props.onChangeField("CHANGE_FIELD4", e.target.value);
+              }}
+              required
+            />
+          </CCol>
+        </CRow>
 
-        <CCol md={3}>
-          <CFormSelect
-            aria-describedby="validationCustom04Feedback"
-            feedbackInvalid="Please select a valid fuel type."
-            id="validationCustom04"
-            label="Account Type"
-            value={accountType}
-            onChange={(e) => {
-              setInitWidget(false);
-              setAccountType(e.target.value);
-              props.onChangeField("CHANGE_FIELD6", e.target.value);
-            }}
-            required
-          >
-            <option></option>
-            <option>RESIDENTIAL</option>
-            <option>SMB</option>
-            {/* <option></option> */}
-          </CFormSelect>
-        </CCol>
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            Fuel Type *:
+          </CFormLabel>
+          <CCol md={3}>
+            <CFormSelect
+              aria-describedby="validationCustom04Feedback"
+              feedbackInvalid="Please select a valid fuel type."
+              id="validationCustom04"
+              //label="Fuel Type"
+              value={fuelType}
+              onChange={(e) => {
+                setInitWidget(false);
+                setFuelType(e.target.value);
+                props.onChangeField("CHANGE_FIELD5", e.target.value);
+              }}
+              required
+            >
+              <option></option>
+              <option value="ELECTRIC">ELECTRIC</option>
+              <option value="GAS">GAS</option>
+              <option value="WATER">WATER</option>
+            </CFormSelect>
+          </CCol>
+        </CRow>
+
+        <CRow className="mb-3">
+          <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
+            Account Type *:
+          </CFormLabel>
+          <CCol md={3}>
+            <CFormSelect
+              aria-describedby="validationCustom04Feedback"
+              feedbackInvalid="Please select a valid fuel type."
+              id="validationCustom04"
+              //label="Account Type"
+              value={accountType}
+              onChange={(e) => {
+                setInitWidget(false);
+                setAccountType(e.target.value);
+                props.onChangeField("CHANGE_FIELD6", e.target.value);
+              }}
+              required
+            >
+              <option></option>
+              <option>RESIDENTIAL</option>
+              <option>SMB</option>
+              {/* <option></option> */}
+            </CFormSelect>
+          </CCol>
+        </CRow>
         <br />
 
         <CCol xs={12}>
