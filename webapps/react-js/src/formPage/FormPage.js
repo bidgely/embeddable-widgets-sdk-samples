@@ -25,6 +25,7 @@ import {
   CDropdownMenu,
   CDropdownItem,
   CDropdownDivider,
+  CImage,
 } from "@coreui/react";
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
 import { useHistory } from "react-router-dom";
@@ -102,6 +103,13 @@ function FormPage(props) {
     <div className="sdk-input">
       <CHeader>
         <CContainer fluid>
+          <CImage
+            align="end"
+            rounded
+            src="https://www.google.com/u/0/ac/images/logo.gif?uid=113977568761990794316"
+            width={100}
+            height={50}
+          />
           <CHeaderBrand href="/">Bidgely Web Widget SDK</CHeaderBrand>
           <CHeaderToggler onClick={() => setVisible(!visible)} />
           <CCollapse className="header-collapse" visible={visible}>
@@ -115,14 +123,14 @@ function FormPage(props) {
                 <CNavLink href="/">Link</CNavLink>
               </CNavItem>
               <CDropdown variant="nav-item">
-                <CDropdownToggle color="secondary">
-                  Dropdown button
-                </CDropdownToggle>
+                <CDropdownToggle color="secondary">Switch</CDropdownToggle>
                 <CDropdownMenu>
-                  <CDropdownItem href="/">Action</CDropdownItem>
-                  <CDropdownItem href="/">Another action</CDropdownItem>
+                  <CDropdownItem href="/">ELECTRIC</CDropdownItem>
+                  <CDropdownItem href="/">GAS</CDropdownItem>
                   <CDropdownDivider />
-                  <CDropdownItem href="/">Something else here</CDropdownItem>
+                  <CDropdownItem href="/">
+                    Something else here other home?
+                  </CDropdownItem>
                 </CDropdownMenu>
               </CDropdown>
               {/* <CNavItem>
