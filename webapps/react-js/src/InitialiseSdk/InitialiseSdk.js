@@ -1,9 +1,13 @@
 /* eslint-disable */
 
 import { connect } from "react-redux";
+import TabViewWidgets from "../tab-view-wdigets/TabViewWidgets";
+import FormPage from "../formPage/FormPage";
+import { useHistory } from "react-router-dom";
 
 function InitialiseSdk(props) {
-  console.log(props);
+  const history = useHistory();
+
   const client_id = props.oauthClient;
   const api_url = props.apiEndPoint;
   const accessToken = props.accessToken;
@@ -99,26 +103,24 @@ function InitialiseSdk(props) {
                   //            if (!renderWidgetsImmediate) showRenderContainer()
                 }
 
-                if (
-                  data.messageType === "SUCCESS" ||
-                  data.messageType === "ERROR"
-                ) {
-                  // const statusBox = document.getElementById('initialise-status')
-                  // statusBox.innerHTML = `Initialized : ${JSON.stringify(data)}`
+                if (data.messageType === "ERROR") {
+                  props.onChangeField("ERROR_API", data);
+                  history.push("/");
+                  return (
+                    <div>
+                      <FormPage initializationError={data} />
+                    </div>
+                  );
                 }
               }
             );
           });
       });
-  } catch (e) {
-    // const statusBox = document.getElementById('initialise-status')
-    // statusBox.innerHTML = `Error : ${e.message}`
-  }
+  } catch (e) {}
 
   return (
     <div>
-      <bidgely-home-survey></bidgely-home-survey>
-      <bidgely-usage-insights> </bidgely-usage-insights>
+      <TabViewWidgets />
     </div>
   );
 }
@@ -128,4 +130,11 @@ const mapStatetoProps = (state) => {
     ...state,
   };
 };
-export default connect(mapStatetoProps)(InitialiseSdk);
+
+const mapDispatchtoProps = (dispatch) => {
+  return {
+    onChangeField: (fieldName, fieldValue) =>
+      dispatch({ type: fieldName, value: fieldValue }),
+  };
+};
+export default connect(mapStatetoProps, mapDispatchtoProps)(InitialiseSdk);

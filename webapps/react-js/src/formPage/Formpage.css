@@ -5,3 +5,7 @@
 .bold-weight{
     font-weight: bold;
 }
+
+.sdk-input-form-error{
+    padding: 1px 25px;
+}

@@ -26,13 +26,35 @@ import {
   CDropdownItem,
   CDropdownDivider,
   CImage,
+  CAlert,
 } from "@coreui/react";
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import "../formPage/Formpage.css";
+import axios from "axios";
+
+function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
+  //to Do Convert this to a input / api solution
+  var ipAddressUrl = apiEndPoint + "/v2.0/whitelist-origin/";
+  const AuthStr = "Bearer " + accessToken;
+  const payload = {
+    clientId: oauthClientId,
+    requestOrigin: "2406:7400:51:e033:b49c:b354:58bb:d09e",
+  };
+  axios
+    .post(ipAddressUrl, payload, { headers: { Authorization: AuthStr } })
+    .then((response) => {
+      console.log("whitelisting is done", response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
 function FormPage(props) {
+  const errorMessage = props?.errorObject?.data?.errorMessage;
+
   const localStorageInfo = JSON.parse(
     localStorage.getItem("bidgelySdkInitInfo") || "{}"
   );
@@ -99,6 +121,11 @@ function FormPage(props) {
 
   const [visible, setVisible] = useState(true);
 
+  if (errorMessage) {
+    //TODO user Would be able to easily whitelist helpful to developers while trying widgets
+    callWhiteList(apiEndPoint, oauthClient, accessToken);
+  }
+
   return (
     <div className="sdk-input">
       <CHeader>
@@ -110,7 +137,9 @@ function FormPage(props) {
             width={100}
             height={50}
           />
-          <CHeaderBrand href="/" className="bold-weight">Web Widget SDK Demo</CHeaderBrand>
+          <CHeaderBrand href="/" className="bold-weight">
+            Web Widget SDK Demo
+          </CHeaderBrand>
           <CHeaderToggler onClick={() => setVisible(!visible)} />
           <CCollapse className="header-collapse" visible={visible}>
             <CHeaderNav>
@@ -355,6 +384,45 @@ function FormPage(props) {
           </CButton>
         </CCol>
       </CForm>
+
+      {errorMessage?.length > 0 ? (
+        <CCol md={10} className="sdk-input-form-error">
+          <CAlert color="danger" className="d-flex align-items-center">
+            <svg
+              className="flex-shrink-0 me-2"
+              width="24"
+              height="24"
+              viewBox="0 0 512 512"
+            >
+              <rect
+                width="32"
+                height="176"
+                x="240"
+                y="176"
+                fill="var(--ci-primary-color, currentColor)"
+                className="ci-primary"
+              ></rect>
+              <rect
+                width="32"
+                height="32"
+                x="240"
+                y="384"
+                fill="var(--ci-primary-color, currentColor)"
+                className="ci-primary"
+              ></rect>
+              <path
+                fill="var(--ci-primary-color, currentColor)"
+                d="M274.014,16H237.986L16,445.174V496H496V445.174ZM464,464H48V452.959L256,50.826,464,452.959Z"
+                className="ci-primary"
+              ></path>
+            </svg>
+            <div>{errorMessage} Soon a button to whitelist from here</div>
+          </CAlert>
+        </CCol>
+      ) : (
+        <></>
+      )}
+
       {/* {initialiseWidget && (
         <InitialiseSdk
           oauthClient={oauthClient}

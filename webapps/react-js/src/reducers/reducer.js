@@ -8,6 +8,7 @@ const intialState = {
   aesKey: "",
   iv: "",
   userId: "",
+  errorObject: "",
 };
 
 const reducer = (state = intialState, action) => {
@@ -56,6 +57,11 @@ const reducer = (state = intialState, action) => {
       return {
         ...state,
         userId: action.value,
+      };
+    case "ERROR_API":
+      return {
+        ...state,
+        errorObject: action.value,
       };
     default:
       break;
