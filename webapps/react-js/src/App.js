@@ -1,20 +1,27 @@
 /* eslint-disable */
 import "./App.css";
 import FormPage from "./formPage/FormPage";
-
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import InitialiseSdk from "./InitialiseSdk/InitialiseSdk";
 
 function App() {
   return (
     <div>
-      <div className="Form-page">
-        <FormPage />
-      </div>
+      <Router>
+        <Switch>
+          <Route path="/" exact>
+            <FormPage />
+          </Route>
+          <Route path="/dashboard">
+            <InitialiseSdk />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
 
 export default App;
-
 
 // {/* <div className="App">
 // <header className="App-header">

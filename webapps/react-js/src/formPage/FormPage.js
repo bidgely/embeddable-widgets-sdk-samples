@@ -14,6 +14,7 @@ import {
   CRow,
 } from "@coreui/react";
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
+import { useHistory } from "react-router-dom";
 
 function FormPage() {
   const localStorageInfo = JSON.parse(
@@ -49,9 +50,11 @@ function FormPage() {
     ? useState(localStorageInfo.accountType)
     : useState("");
 
-  //onChange={e => setFirstName(e.target.value)}
+  const history = useHistory();
+
   const handleSubmit = (event) => {
     console.log("submit", event);
+
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -60,9 +63,10 @@ function FormPage() {
       setInitWidget(true);
       event.preventDefault();
       event.stopPropagation();
+      history.push('/dashboard');
     }
     setValidated(true);
-    setInitWidget(true);
+    //setInitWidget(true);
   };
 
   const handleOauthChange = (event) => {
