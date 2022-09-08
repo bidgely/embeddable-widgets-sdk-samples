@@ -12,14 +12,26 @@ import {
   CFormFeedback,
   CButton,
   CRow,
+  CHeader,
+  CContainer,
+  CHeaderBrand,
+  CHeaderToggler,
+  CCollapse,
+  CHeaderNav,
+  CNavItem,
+  CNavLink,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownMenu,
+  CDropdownItem,
+  CDropdownDivider,
 } from "@coreui/react";
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import '../formPage/Formpage.css';
+import "../formPage/Formpage.css";
 
 function FormPage(props) {
-  console.log({ props });
   const localStorageInfo = JSON.parse(
     localStorage.getItem("bidgelySdkInitInfo") || "{}"
   );
@@ -86,10 +98,52 @@ function FormPage(props) {
     setInitWidget(false);
   };
 
+  const [visible, setVisible] = useState(true);
+
   return (
-    <div className="sdk-input-form">
+    <div className="sdk-input">
+      <CHeader>
+        <CContainer fluid>
+          <CHeaderBrand href="/">Bidgely Web Widget SDK</CHeaderBrand>
+          <CHeaderToggler onClick={() => setVisible(!visible)} />
+          <CCollapse className="header-collapse" visible={visible}>
+            <CHeaderNav>
+              <CNavItem>
+                <CNavLink href="/" active>
+                  Home
+                </CNavLink>
+              </CNavItem>
+              <CNavItem>
+                <CNavLink href="/">Link</CNavLink>
+              </CNavItem>
+              <CDropdown variant="nav-item">
+                <CDropdownToggle color="secondary">
+                  Dropdown button
+                </CDropdownToggle>
+                <CDropdownMenu>
+                  <CDropdownItem href="/">Action</CDropdownItem>
+                  <CDropdownItem href="/">Another action</CDropdownItem>
+                  <CDropdownDivider />
+                  <CDropdownItem href="/">Something else here</CDropdownItem>
+                </CDropdownMenu>
+              </CDropdown>
+              <CNavItem>
+                <CNavLink href="/" disabled>
+                  Disabled
+                </CNavLink>
+              </CNavItem>
+            </CHeaderNav>
+            {/* <CForm className="d-flex">
+              <CFormInput className="me-2" type="search" placeholder="Search" />
+              <CButton type="submit" color="success" variant="outline">
+                Search
+              </CButton>
+            </CForm> */}
+          </CCollapse>
+        </CContainer>
+      </CHeader>
       <CForm
-        className="g-3 needs-validation"
+        className="sdk-input-form g-3 needs-validation"
         noValidate
         validated={validated}
         onSubmit={handleSubmit}
@@ -296,7 +350,7 @@ function FormPage(props) {
           </CButton>
         </CCol>
       </CForm>
-      {initialiseWidget && (
+      {/* {initialiseWidget && (
         <InitialiseSdk
           oauthClient={oauthClient}
           apiEndPoint={apiEndPoint}
@@ -308,7 +362,7 @@ function FormPage(props) {
           fuelType={fuelType}
           accountType={accountType}
         ></InitialiseSdk>
-      )}
+      )} */}
     </div>
   );
 }
