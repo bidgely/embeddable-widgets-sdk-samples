@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import { connect } from "react-redux";
+
 function InitialiseSdk(props) {
   console.log(props);
   const client_id = props.oauthClient;
@@ -121,4 +123,9 @@ function InitialiseSdk(props) {
   );
 }
 
-export default InitialiseSdk;
+const mapStatetoProps = (state) => {
+  return {
+    ...state,
+  };
+};
+export default connect(mapStatetoProps)(InitialiseSdk);

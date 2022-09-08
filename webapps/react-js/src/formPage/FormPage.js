@@ -15,8 +15,10 @@ import {
 } from "@coreui/react";
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 
-function FormPage() {
+function FormPage(props) {
+  console.log({ props });
   const localStorageInfo = JSON.parse(
     localStorage.getItem("bidgelySdkInitInfo") || "{}"
   );
@@ -25,36 +27,44 @@ function FormPage() {
   const [oauthClient, setOauthClient] = localStorageInfo.clientId
     ? useState(localStorageInfo.clientId)
     : useState("");
+  props.onChangeField("CHANGE_FIELD1", localStorageInfo.clientId);
   const [apiEndPoint, setApiEndPoint] = localStorageInfo.apiUrl
     ? useState(localStorageInfo.apiUrl)
     : useState("");
+  props.onChangeField("CHANGE_FIELD2", localStorageInfo.apiUrl);
   const [accessToken, setAccessToken] = localStorageInfo.accessToken
     ? useState(localStorageInfo.accessToken)
     : useState("");
+  props.onChangeField("CHANGE_FIELD3", localStorageInfo.accessToken);
   const [aesKey, setAesKey] = localStorageInfo.aesKey
     ? useState(localStorageInfo.aesKey)
     : useState("");
+  props.onChangeField("CHANGE_FIELD7", localStorageInfo.aesKey);
   const [iv, setIv] = localStorageInfo.iv
     ? useState(localStorageInfo.iv)
     : useState("");
+  props.onChangeField("CHANGE_FIELD8", localStorageInfo.iv);
   const [userId, setUserId] = localStorageInfo.userId
     ? useState(localStorageInfo.userId)
     : useState("");
+  props.onChangeField("CHANGE_FIELD9", localStorageInfo.userId);
   const [csrId, setCsrId] = localStorageInfo.csrId
     ? useState(localStorageInfo.csrId)
     : useState("");
+  props.onChangeField("CHANGE_FIELD4", localStorageInfo.csrId);
   const [fuelType, setFuelType] = localStorageInfo.fuelType
     ? useState(localStorageInfo.fuelType)
     : useState("");
+  props.onChangeField("CHANGE_FIELD5", localStorageInfo.fuelType);
   const [accountType, setAccountType] = localStorageInfo.accountType
     ? useState(localStorageInfo.accountType)
     : useState("");
-
+  props.onChangeField("CHANGE_FIELD6", localStorageInfo.accountType);
   const history = useHistory();
 
   const handleSubmit = (event) => {
     console.log("submit", event);
-
+    history.push("/dashboard");
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -63,7 +73,7 @@ function FormPage() {
       setInitWidget(true);
       event.preventDefault();
       event.stopPropagation();
-      history.push('/dashboard');
+      history.push("/dashboard");
     }
     setValidated(true);
     //setInitWidget(true);
@@ -71,6 +81,7 @@ function FormPage() {
 
   const handleOauthChange = (event) => {
     setOauthClient(event.target.value);
+    props.onChangeField("CHANGE_FIELD1", event.target.value);
     setInitWidget(false);
   };
 
@@ -108,6 +119,7 @@ function FormPage() {
             label="Api End Point"
             onChange={(e) => {
               setApiEndPoint(e.target.value);
+              props.onChangeField("CHANGE_FIELD2", e.target.value);
               setInitWidget(false);
             }}
             required
@@ -123,6 +135,7 @@ function FormPage() {
             onChange={(e) => {
               setInitWidget(false);
               setAccessToken(e.target.value);
+              props.onChangeField("CHANGE_FIELD3", e.target.value);
             }}
             required
           />
@@ -138,6 +151,7 @@ function FormPage() {
             onChange={(e) => {
               setInitWidget(false);
               setAesKey(e.target.value);
+              props.onChangeField("CHANGE_FIELD7", e.target.value);
             }}
             required
           />
@@ -153,6 +167,7 @@ function FormPage() {
             onChange={(e) => {
               setInitWidget(false);
               setIv(e.target.value);
+              props.onChangeField("CHANGE_FIELD8", e.target.value);
             }}
             required
           />
@@ -168,6 +183,7 @@ function FormPage() {
             onChange={(e) => {
               setInitWidget(false);
               setUserId(e.target.value);
+              props.onChangeField("CHANGE_FIELD9", e.target.value);
             }}
             required
           />
@@ -183,6 +199,7 @@ function FormPage() {
             onChange={(e) => {
               setInitWidget(false);
               setCsrId(e.target.value);
+              props.onChangeField("CHANGE_FIELD4", e.target.value);
             }}
             required
           />
@@ -198,6 +215,7 @@ function FormPage() {
             onChange={(e) => {
               setInitWidget(false);
               setFuelType(e.target.value);
+              props.onChangeField("CHANGE_FIELD5", e.target.value);
             }}
             required
           >
@@ -218,6 +236,7 @@ function FormPage() {
             onChange={(e) => {
               setInitWidget(false);
               setAccountType(e.target.value);
+              props.onChangeField("CHANGE_FIELD6", e.target.value);
             }}
             required
           >
@@ -252,4 +271,17 @@ function FormPage() {
   );
 }
 
-export default FormPage;
+const mapStatetoProps = (state) => {
+  return {
+    ...state,
+  };
+};
+
+const mapDispatchtoProps = (dispatch) => {
+  return {
+    onChangeField: (fieldName, fieldValue) =>
+      dispatch({ type: fieldName, value: fieldValue }),
+  };
+};
+
+export default connect(mapStatetoProps, mapDispatchtoProps)(FormPage);
