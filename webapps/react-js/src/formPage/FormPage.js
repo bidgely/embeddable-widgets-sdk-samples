@@ -76,8 +76,6 @@ function FormPage(props) {
   const history = useHistory();
 
   const handleSubmit = (event) => {
-    console.log("submit", event);
-    history.push("/dashboard");
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -286,7 +284,6 @@ function FormPage(props) {
                 setCsrId(e.target.value);
                 props.onChangeField("CHANGE_FIELD4", e.target.value);
               }}
-              required
             />
           </CCol>
         </CRow>
