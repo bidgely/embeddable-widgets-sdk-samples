@@ -61,6 +61,33 @@ function TabViewWidgets(props) {
             Bidgely Next Bill Projection
           </CNavLink>
         </CNavItem>
+        <CNavItem>
+          <CNavLink
+            // href="javascript:void(0);"
+            active={activeKey === 7}
+            onClick={() => setActiveKey(7)}
+          >
+            Bidgely Recommendation top tips
+          </CNavLink>
+        </CNavItem>
+        <CNavItem>
+          <CNavLink
+            // href="javascript:void(0);"
+            active={activeKey === 8}
+            onClick={() => setActiveKey(8)}
+          >
+            Bidgely Recommendation tips
+          </CNavLink>
+        </CNavItem>
+        <CNavItem>
+          <CNavLink
+            // href="javascript:void(0);"
+            active={activeKey === 9}
+            onClick={() => setActiveKey(9)}
+          >
+            Bidgely High Bill analyser
+          </CNavLink>
+        </CNavItem>
       </CNav>
       <CTabContent>
         <CTabPane
@@ -104,6 +131,27 @@ function TabViewWidgets(props) {
           visible={activeKey === 6}
         >
           <bidgely-next-bill-projection></bidgely-next-bill-projection>
+        </CTabPane>
+        <CTabPane
+          role="tabpanel"
+          aria-labelledby="contact-tab"
+          visible={activeKey === 7}
+        >
+          <bidgely-recommendation-top-tips></bidgely-recommendation-top-tips>
+        </CTabPane>
+        <CTabPane
+          role="tabpanel"
+          aria-labelledby="contact-tab"
+          visible={activeKey === 8}
+        >
+          <bidgely-recommendation-tips></bidgely-recommendation-tips>
+        </CTabPane>
+        <CTabPane
+          role="tabpanel"
+          aria-labelledby="contact-tab"
+          visible={activeKey === 9}
+        >
+          <bidgely-high-bill-analyser></bidgely-high-bill-analyser>
         </CTabPane>
       </CTabContent>
     </div>
