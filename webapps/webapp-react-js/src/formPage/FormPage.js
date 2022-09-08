@@ -16,33 +16,58 @@ import {
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
 
 function FormPage() {
+  const localStorageInfo = JSON.parse(
+    localStorage.getItem("bidgelySdkInitInfo") || "{}"
+  );
   const [initialiseWidget, setInitWidget] = useState(false);
   const [validated, setValidated] = useState(false);
-  const [oauthClient, setOauthClient] = useState("");
-  const [apiEndPoint, setApiEndPoint] = useState("");
-  const [accessToken, setAccessToken] = useState("");
-  const [aesKey, setAesKey] = useState("");
-  const [iv, setIv] = useState("");
-  const [userId, setUserId] = useState("");
-  const [csrId, setCsrId] = useState("");
-  const [fuelType, setFuelType] = useState("");
-  const [accountType, setAccountType] = useState("");
+  const [oauthClient, setOauthClient] = localStorageInfo.clientId
+    ? useState(localStorageInfo.clientId)
+    : useState("");
+  const [apiEndPoint, setApiEndPoint] = localStorageInfo.apiUrl
+    ? useState(localStorageInfo.apiUrl)
+    : useState("");
+  const [accessToken, setAccessToken] = localStorageInfo.accessToken
+    ? useState(localStorageInfo.accessToken)
+    : useState("");
+  const [aesKey, setAesKey] = localStorageInfo.aesKey
+    ? useState(localStorageInfo.aesKey)
+    : useState("");
+  const [iv, setIv] = localStorageInfo.iv
+    ? useState(localStorageInfo.iv)
+    : useState("");
+  const [userId, setUserId] = localStorageInfo.userId
+    ? useState(localStorageInfo.userId)
+    : useState("");
+  const [csrId, setCsrId] = localStorageInfo.csrId
+    ? useState(localStorageInfo.csrId)
+    : useState("");
+  const [fuelType, setFuelType] = localStorageInfo.fuelType
+    ? useState(localStorageInfo.fuelType)
+    : useState("");
+  const [accountType, setAccountType] = localStorageInfo.accountType
+    ? useState(localStorageInfo.accountType)
+    : useState("");
 
   //onChange={e => setFirstName(e.target.value)}
   const handleSubmit = (event) => {
+    console.log("submit", event);
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     } else {
       setInitWidget(true);
+      event.preventDefault();
+      event.stopPropagation();
     }
     setValidated(true);
-    setInitWidget(true)
+    setInitWidget(true);
   };
 
   const handleOauthChange = (event) => {
     setOauthClient(event.target.value);
+    setInitWidget(false);
   };
 
   return (
@@ -77,7 +102,10 @@ function FormPage() {
             feedbackValid="Looks good!"
             id={apiEndPoint}
             label="Api End Point"
-            onChange={(e) => setApiEndPoint(e.target.value)}
+            onChange={(e) => {
+              setApiEndPoint(e.target.value);
+              setInitWidget(false);
+            }}
             required
           />
         </CCol>
@@ -88,7 +116,10 @@ function FormPage() {
             feedbackValid="Looks good!"
             id={accessToken}
             label="Access Token"
-            onChange={(e) => setAccessToken(e.target.value)}
+            onChange={(e) => {
+              setInitWidget(false);
+              setAccessToken(e.target.value);
+            }}
             required
           />
         </CCol>
@@ -100,7 +131,10 @@ function FormPage() {
             feedbackValid="Looks good!"
             id={aesKey}
             label="Aes Key"
-            onChange={(e) => setAesKey(e.target.value)}
+            onChange={(e) => {
+              setInitWidget(false);
+              setAesKey(e.target.value);
+            }}
             required
           />
         </CCol>
@@ -112,7 +146,10 @@ function FormPage() {
             feedbackValid="Looks good!"
             id={iv}
             label="IV"
-            onChange={(e) => setIv(e.target.value)}
+            onChange={(e) => {
+              setInitWidget(false);
+              setIv(e.target.value);
+            }}
             required
           />
         </CCol>
@@ -124,7 +161,10 @@ function FormPage() {
             feedbackValid="Looks good!"
             id={userId}
             label="Partner User Id"
-            onChange={(e) => setUserId(e.target.value)}
+            onChange={(e) => {
+              setInitWidget(false);
+              setUserId(e.target.value);
+            }}
             required
           />
         </CCol>
@@ -136,7 +176,10 @@ function FormPage() {
             feedbackValid="Looks good!"
             id={csrId}
             label="CSR Id"
-            onChange={(e) => setCsrId(e.target.value)}
+            onChange={(e) => {
+              setInitWidget(false);
+              setCsrId(e.target.value);
+            }}
             required
           />
         </CCol>
@@ -148,7 +191,10 @@ function FormPage() {
             id="validationCustom04"
             label="Fuel Type"
             value={fuelType}
-            onChange={(e) => setFuelType(e.target.value)}
+            onChange={(e) => {
+              setInitWidget(false);
+              setFuelType(e.target.value);
+            }}
             required
           >
             <option></option>
@@ -165,7 +211,10 @@ function FormPage() {
             id="validationCustom04"
             label="Account Type"
             value={accountType}
-            onChange={(e) => setAccountType(e.target.value)}
+            onChange={(e) => {
+              setInitWidget(false);
+              setAccountType(e.target.value);
+            }}
             required
           >
             <option></option>
@@ -200,4 +249,3 @@ function FormPage() {
 }
 
 export default FormPage;
-

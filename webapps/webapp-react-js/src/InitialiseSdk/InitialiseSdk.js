@@ -116,6 +116,7 @@ function InitialiseSdk(props) {
   return (
     <div>
       <bidgely-home-survey></bidgely-home-survey>
+      <bidgely-usage-insights> </bidgely-usage-insights>
     </div>
   );
 }
