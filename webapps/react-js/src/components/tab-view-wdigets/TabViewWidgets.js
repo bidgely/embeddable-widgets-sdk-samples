@@ -2,8 +2,19 @@
 import { useState } from "react";
 import { CNavItem, CNavLink, CNav, CTabContent, CTabPane } from "@coreui/react";
 import "./TabView.css";
+import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
+
 function TabViewWidgets(props) {
+  const history = useHistory();
   const [activeKey, setActiveKey] = useState(1);
+  if (
+    !props.widgetResponseObject ||
+    props.widgetResponseObject.messageType !== "SUCCESS"
+  ) {
+    //route back to form page
+    history.push("/");
+  }
   return (
     <div className="tab-view">
       <CNav className="tab-list" variant="tabs" role="tablist">
@@ -158,4 +169,10 @@ function TabViewWidgets(props) {
   );
 }
 
-export default TabViewWidgets;
+const mapStatetoProps = (state) => {
+  return {
+    ...state,
+  };
+};
+
+export default connect(mapStatetoProps)(TabViewWidgets);

@@ -1,11 +1,11 @@
-.sdk-input-form{
-    padding: 25px;
+.sdk-input {
+  background-color: #f0f8ff;
 }
 
-.bold-weight{
-    font-weight: bold;
+.sdk-input-form {
+  padding: 25px;
 }
 
-.sdk-input-form-error{
-    padding: 1px 25px;
+.sdk-input-form-error {
+  padding: 1px 25px;
 }
