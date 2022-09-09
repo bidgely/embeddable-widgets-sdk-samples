@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useState } from "react";
 import TabViewWidgets from "./components/tab-view-wdigets/TabViewWidgets";
 import AppHeader from "./components/App-Header/AppHeader";
+import AppFooter from "./components/App-Footer/AppFooter";
 
 function App() {
   const [visible, setVisible] = useState(true);
@@ -21,6 +22,7 @@ function App() {
             <TabViewWidgets />
           </Route>
         </Switch>
+        <AppFooter />
       </Router>
     </div>
   );

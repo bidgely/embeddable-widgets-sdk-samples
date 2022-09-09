@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-export async function InitialiseBidgelySdk(
+export function InitialiseBidgelySdk(
   client_id,
   api_url,
   accessToken,

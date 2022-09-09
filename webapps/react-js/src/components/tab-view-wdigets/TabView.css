@@ -1,4 +1,8 @@
-.tab-view{
-    margin-top: 10px;
-    margin-left: 5px;
+.tab-view {
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.nav-link {
+  color: black;
 }
