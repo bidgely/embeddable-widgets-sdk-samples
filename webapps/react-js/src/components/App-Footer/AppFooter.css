@@ -1,4 +1,8 @@
 .App-footer {
+  height: 60px;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
   background-color: #f0f8ff;
   display: flex;
   justify-content: center;

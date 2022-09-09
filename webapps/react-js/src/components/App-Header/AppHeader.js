@@ -1,6 +1,6 @@
 /* eslint-disable */
 import "./AppHeader.css";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
   CHeader,
@@ -26,7 +26,7 @@ function AppHeader() {
 
   return (
     <div>
-      <CHeader>
+      <CHeader className="App-header">
         <CContainer fluid>
           <CImage
             align="end"
@@ -41,13 +41,11 @@ function AppHeader() {
           {homePath && (
             <CCollapse className="header-collapse" visible={visible}>
               <CHeaderNav>
-                <CNavItem>
-                  <CNavLink href="/" active>
-                    Home
-                  </CNavLink>
+                <CNavItem className="nav">
+                  <CNavLink href="/" active>Home</CNavLink>
                 </CNavItem>
-                <CNavItem>
-                  <CNavLink href="/">Form</CNavLink>
+                <CNavItem className="nav">
+                  <Link to="/compare">Compare</Link>
                 </CNavItem>
                 <CDropdown variant="nav-item">
                   <CDropdownToggle color="secondary">Switch</CDropdownToggle>

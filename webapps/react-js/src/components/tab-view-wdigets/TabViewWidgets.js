@@ -1,20 +1,22 @@
 /* eslint-disable */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CNavItem, CNavLink, CNav, CTabContent, CTabPane } from "@coreui/react";
 import "./TabView.css";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 function TabViewWidgets(props) {
   const history = useHistory();
   const [activeKey, setActiveKey] = useState(1);
-  if (
-    !props.widgetResponseObject ||
-    props.widgetResponseObject.messageType !== "SUCCESS"
-  ) {
-    //route back to form page
-    history.push("/");
-  }
+  const widgetResp = useSelector(state => state.auth.widgetResponseObject)
+
+  useEffect(() => {
+    if (!widgetResp || widgetResp.messageType !== "SUCCESS") {
+      //route back to form page
+      history.push("/");
+    }
+  }, [])
+
   return (
     <div className="tab-view">
       <CNav className="tab-list" variant="tabs" role="tablist">
@@ -101,63 +103,63 @@ function TabViewWidgets(props) {
         </CNavItem>
       </CNav>
       <CTabContent>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="home-tab"
           visible={activeKey === 1}
         >
           <bidgely-home-survey></bidgely-home-survey>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="profile-tab"
           visible={activeKey === 2}
         >
           <bidgely-usage-insights></bidgely-usage-insights>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="contact-tab"
           visible={activeKey === 3}
         >
           <bidgely-similar-homes-insights></bidgely-similar-homes-insights>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="contact-tab"
           visible={activeKey === 4}
         >
           <bidgely-bill-itemisation></bidgely-bill-itemisation>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="contact-tab"
           visible={activeKey === 5}
         >
           <bidgely-rate-plan-comparison></bidgely-rate-plan-comparison>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="contact-tab"
           visible={activeKey === 6}
         >
           <bidgely-next-bill-projection></bidgely-next-bill-projection>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="contact-tab"
           visible={activeKey === 7}
         >
           <bidgely-recommendation-top-tips></bidgely-recommendation-top-tips>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="contact-tab"
           visible={activeKey === 8}
         >
           <bidgely-recommendation-tips></bidgely-recommendation-tips>
         </CTabPane>
-        <CTabPane
+        <CTabPane className="widget-container"
           role="tabpanel"
           aria-labelledby="contact-tab"
           visible={activeKey === 9}
@@ -169,10 +171,4 @@ function TabViewWidgets(props) {
   );
 }
 
-const mapStatetoProps = (state) => {
-  return {
-    ...state,
-  };
-};
-
-export default connect(mapStatetoProps)(TabViewWidgets);
+export default TabViewWidgets;
