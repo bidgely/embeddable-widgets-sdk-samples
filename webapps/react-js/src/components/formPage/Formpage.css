@@ -1,9 +1,11 @@
-.sdk-input-form{
-    padding: 25px;
-    background-color: aliceblue;
-    height: 100vh;
+.sdk-input {
+  background-color: #f0f8ff;
 }
 
-.sdk-input-form-error{
-    padding: 1px 25px;
+.sdk-input-form {
+  padding: 25px;
+}
+
+.sdk-input-form-error {
+  padding: 1px 25px;
 }
