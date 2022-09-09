@@ -1,14 +1,13 @@
 /* eslint-disable */
 import "./App.css";
 import FormPage from "./components/formPage/FormPage";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import InitialiseSdk from "./components/InitialiseSdk/InitialiseSdk";
 import { useState } from "react";
 import {
   CHeader,
   CContainer,
   CHeaderBrand,
-  CHeaderToggler,
   CCollapse,
   CHeaderNav,
   CNavItem,
@@ -20,8 +19,10 @@ import {
   CDropdownDivider,
   CImage,
 } from "@coreui/react";
+
 function App() {
   const [visible, setVisible] = useState(true);
+
   return (
     <div>
       <CHeader>
@@ -36,7 +37,6 @@ function App() {
           <CHeaderBrand href="/" className="bold-weight">
             Web Widget SDK Demo
           </CHeaderBrand>
-          <CHeaderToggler onClick={() => setVisible(!visible)} />
           <CCollapse className="header-collapse" visible={visible}>
             <CHeaderNav>
               <CNavItem>
@@ -88,20 +88,3 @@ function App() {
 }
 
 export default App;
-
-// {/* <div className="App">
-// <header className="App-header">
-//   {/* <img src={logo} className="App-logo" alt="logo" /> */}
-// <p>
-//   Edit <code>src/App.js</code> and save to reload.
-// </p>
-// <a
-//   className="App-link"
-//   href="https://reactjs.org"
-//   target="_blank"
-//   rel="noopener noreferrer"
-// >
-//   Learn React
-// </a>
-// </header>
-// </div> */}
