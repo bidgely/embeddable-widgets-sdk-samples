@@ -165,7 +165,7 @@ function FormPage(props) {
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
             Access Token *:
           </CFormLabel>
-          <CCol md={4}>
+          <CCol sm={5}>
             <CFormInput
               type="text"
               defaultValue={accessToken}
@@ -186,7 +186,7 @@ function FormPage(props) {
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
             Aes Key *:
           </CFormLabel>
-          <CCol md={4}>
+          <CCol sm={5}>
             <CFormInput
               type="text"
               defaultValue={aesKey}
@@ -207,7 +207,7 @@ function FormPage(props) {
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
             IV *:
           </CFormLabel>
-          <CCol md={4}>
+          <CCol sm={5}>
             <CFormInput
               type="text"
               defaultValue={iv}
@@ -228,7 +228,7 @@ function FormPage(props) {
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
             Partner User Id *:
           </CFormLabel>
-          <CCol md={4}>
+          <CCol sm={5}>
             <CFormInput
               type="text"
               defaultValue={userId}
@@ -249,7 +249,7 @@ function FormPage(props) {
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
             CSR Id :
           </CFormLabel>
-          <CCol md={4}>
+          <CCol sm={5}>
             <CFormInput
               type="text"
               defaultValue={csrId}
@@ -269,7 +269,7 @@ function FormPage(props) {
           <CFormLabel htmlFor="fuelType" className="col-sm-2 col-form-label">
             Fuel Type *:
           </CFormLabel>
-          <CCol md={3}>
+          <CCol sm={5}>
             <CFormSelect
               aria-describedby="validationCustom04Feedback"
               feedbackInvalid="Please select a valid fuel type."
@@ -295,7 +295,7 @@ function FormPage(props) {
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
             Account Type *:
           </CFormLabel>
-          <CCol md={3}>
+          <CCol sm={5}>
             <CFormSelect
               aria-describedby="validationCustom04Feedback"
               feedbackInvalid="Please select a valid fuel type."
@@ -321,7 +321,7 @@ function FormPage(props) {
 
         <CCol xs={12}>
           <CButton color="primary" type="submit">
-            Submit form
+            Submit
           </CButton>
         </CCol>
       </CForm>
