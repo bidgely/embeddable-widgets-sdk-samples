@@ -10,11 +10,14 @@ import {
   CRow,
   CAlert,
 } from "@coreui/react";
-import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
+
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import "./Formpage.css";
 import axios from "axios";
+
+import { InitialiseBidgelySdk } from "../../service/bidgely-sdk-service";
+import { setFormDataToLocalStorage } from "../../helpers/helpers";
 
 function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
   //to Do Convert this to a input / api solution
@@ -35,19 +38,18 @@ function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
 }
 
 function FormPage(props) {
-  const errorMessage = props?.errorObject?.data?.errorMessage;
-
+  //getting localStorage to autofill last successfull sdk initialisation
   const localStorageInfo = JSON.parse(
     localStorage.getItem("bidgelySdkInitInfo") || "{}"
   );
-  const [initialiseWidget, setInitWidget] = useState(false);
+
   const [validated, setValidated] = useState(false);
-  const [oauthClient, setOauthClient] = localStorageInfo.clientId
-    ? useState(localStorageInfo.clientId)
+  const [oauthClient, setOauthClient] = localStorageInfo.oauthClient
+    ? useState(localStorageInfo.oauthClient)
     : useState("");
 
-  const [apiEndPoint, setApiEndPoint] = localStorageInfo.apiUrl
-    ? useState(localStorageInfo.apiUrl)
+  const [apiEndPoint, setApiEndPoint] = localStorageInfo.apiEndPoint
+    ? useState(localStorageInfo.apiEndPoint)
     : useState("");
 
   const [accessToken, setAccessToken] = localStorageInfo.accessToken
@@ -76,6 +78,7 @@ function FormPage(props) {
     : useState("");
 
   const history = useHistory();
+  const [responseMessage, setResponseMessgae] = useState();
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -83,22 +86,40 @@ function FormPage(props) {
       event.preventDefault();
       event.stopPropagation();
     } else {
-      setInitWidget(true);
       event.preventDefault();
       event.stopPropagation();
-      history.push("/dashboard");
+      InitialiseBidgelySdk(
+        oauthClient,
+        apiEndPoint,
+        accessToken,
+        aesKey,
+        iv,
+        userId,
+        csrId,
+        fuelType,
+        accountType
+      ).then((data) => {
+        props.onChangeField("SDK_RESPONSE", data);
+        if (data.messageType === "SUCCESS") {
+          setResponseMessgae(data.messageType);
+          setFormDataToLocalStorage(props);
+          //need to handle success styling from timeout to loader
+          history.push("/dashboard");
+        } else {
+          setResponseMessgae(data?.data?.errorMessage);
+          console.log(responseMessage);
+        }
+      });
     }
     setValidated(true);
-    //setInitWidget(true);
   };
 
   const handleOauthChange = (event) => {
     setOauthClient(event.target.value);
     props.onChangeField("CHANGE_FIELD1", event.target.value);
-    setInitWidget(false);
   };
 
-  if (errorMessage) {
+  if (responseMessage) {
     //TODO user Would be able to easily whitelist helpful to developers while trying widgets
     //callWhiteList(apiEndPoint, oauthClient, accessToken);
   }
@@ -133,7 +154,6 @@ function FormPage(props) {
               defaultValue={oauthClient}
               feedbackValid="Looks good!"
               id="oauthClient"
-              //label="Oauth client"
               onChange={handleOauthChange}
               required
             />
@@ -150,11 +170,9 @@ function FormPage(props) {
               defaultValue={apiEndPoint}
               feedbackValid="Looks good!"
               id={apiEndPoint}
-              //label="Api End Point"
               onChange={(e) => {
                 setApiEndPoint(e.target.value);
                 props.onChangeField("CHANGE_FIELD2", e.target.value);
-                setInitWidget(false);
               }}
               required
             />
@@ -171,9 +189,7 @@ function FormPage(props) {
               defaultValue={accessToken}
               feedbackValid="Looks good!"
               id={accessToken}
-              //label="Access Token"
               onChange={(e) => {
-                setInitWidget(false);
                 setAccessToken(e.target.value);
                 props.onChangeField("CHANGE_FIELD3", e.target.value);
               }}
@@ -192,9 +208,7 @@ function FormPage(props) {
               defaultValue={aesKey}
               feedbackValid="Looks good!"
               id={aesKey}
-              //label="Aes Key"
               onChange={(e) => {
-                setInitWidget(false);
                 setAesKey(e.target.value);
                 props.onChangeField("CHANGE_FIELD7", e.target.value);
               }}
@@ -213,9 +227,7 @@ function FormPage(props) {
               defaultValue={iv}
               feedbackValid="Looks good!"
               id={iv}
-              //label="IV"
               onChange={(e) => {
-                setInitWidget(false);
                 setIv(e.target.value);
                 props.onChangeField("CHANGE_FIELD8", e.target.value);
               }}
@@ -234,9 +246,7 @@ function FormPage(props) {
               defaultValue={userId}
               feedbackValid="Looks good!"
               id={userId}
-              //label="Partner User Id"
               onChange={(e) => {
-                setInitWidget(false);
                 setUserId(e.target.value);
                 props.onChangeField("CHANGE_FIELD9", e.target.value);
               }}
@@ -255,9 +265,7 @@ function FormPage(props) {
               defaultValue={csrId}
               feedbackValid="Looks good!"
               id={csrId}
-              //label="CSR Id"
               onChange={(e) => {
-                setInitWidget(false);
                 setCsrId(e.target.value);
                 props.onChangeField("CHANGE_FIELD4", e.target.value);
               }}
@@ -274,10 +282,8 @@ function FormPage(props) {
               aria-describedby="validationCustom04Feedback"
               feedbackInvalid="Please select a valid fuel type."
               id="validationCustom05"
-              //label="Fuel Type"
               value={fuelType}
               onChange={(e) => {
-                setInitWidget(false);
                 setFuelType(e.target.value);
                 props.onChangeField("CHANGE_FIELD5", fuelType);
               }}
@@ -300,13 +306,10 @@ function FormPage(props) {
               aria-describedby="validationCustom04Feedback"
               feedbackInvalid="Please select a valid fuel type."
               id="validationCustom04"
-              //label="Account Type"
               value={accountType}
               onChange={(e) => {
-                setInitWidget(false);
                 setAccountType(e.target.value);
                 props.onChangeField("CHANGE_FIELD6", e.target.value);
-                console.log(props);
               }}
               required
             >
@@ -326,7 +329,7 @@ function FormPage(props) {
         </CCol>
       </CForm>
 
-      {errorMessage?.length > 0 ? (
+      {responseMessage?.length > 0 ? (
         <CCol md={10} className="sdk-input-form-error">
           <CAlert color="danger" className="d-flex align-items-center">
             <svg
@@ -357,7 +360,7 @@ function FormPage(props) {
                 className="ci-primary"
               ></path>
             </svg>
-            <div>{errorMessage}</div>
+            <div>{responseMessage}</div>
           </CAlert>
           <CAlert color="info" className="d-flex align-items-center">
             <div>

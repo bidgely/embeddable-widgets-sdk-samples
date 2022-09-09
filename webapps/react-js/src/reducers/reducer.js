@@ -8,7 +8,7 @@ const intialState = {
   aesKey: "",
   iv: "",
   userId: "",
-  errorObject: "",
+  widgetResponseObject: "",
 };
 
 const reducer = (state = intialState, action) => {
@@ -58,10 +58,10 @@ const reducer = (state = intialState, action) => {
         ...state,
         userId: action.value,
       };
-    case "ERROR_API":
+    case "SDK_RESPONSE":
       return {
         ...state,
-        errorObject: action.value,
+        widgetResponseObject: action.value,
       };
     default:
       break;

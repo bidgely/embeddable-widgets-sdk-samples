@@ -2,7 +2,6 @@
 import "./App.css";
 import FormPage from "./components/formPage/FormPage";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import InitialiseSdk from "./components/InitialiseSdk/InitialiseSdk";
 import { useState } from "react";
 import {
   CHeader,
@@ -19,6 +18,7 @@ import {
   CDropdownDivider,
   CImage,
 } from "@coreui/react";
+import TabViewWidgets from "./components/tab-view-wdigets/TabViewWidgets";
 
 function App() {
   const [visible, setVisible] = useState(true);
@@ -79,7 +79,7 @@ function App() {
             <FormPage />
           </Route>
           <Route path="/dashboard">
-            <InitialiseSdk />
+            <TabViewWidgets />
           </Route>
         </Switch>
       </Router>
