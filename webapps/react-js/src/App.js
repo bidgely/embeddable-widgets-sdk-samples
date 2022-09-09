@@ -29,7 +29,7 @@ function App() {
           <CImage
             align="end"
             rounded
-            src="https://www.google.com/u/0/ac/images/logo.gif?uid=113977568761990794316"
+            src="/images/bidgely-logo.png"
             width={100}
             height={50}
           />

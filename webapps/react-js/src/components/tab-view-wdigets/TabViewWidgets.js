@@ -9,7 +9,7 @@ function TabViewWidgets(props) {
       <CNav className="tab-list" variant="tabs" role="tablist">
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 1}
             onClick={() => setActiveKey(1)}
           >
@@ -18,7 +18,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            //href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 2}
             onClick={() => setActiveKey(2)}
           >
@@ -27,7 +27,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 3}
             onClick={() => setActiveKey(3)}
           >
@@ -36,7 +36,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 4}
             onClick={() => setActiveKey(4)}
           >
@@ -45,7 +45,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 5}
             onClick={() => setActiveKey(5)}
           >
@@ -54,7 +54,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 6}
             onClick={() => setActiveKey(6)}
           >
@@ -63,7 +63,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 7}
             onClick={() => setActiveKey(7)}
           >
@@ -72,7 +72,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 8}
             onClick={() => setActiveKey(8)}
           >
@@ -81,7 +81,7 @@ function TabViewWidgets(props) {
         </CNavItem>
         <CNavItem>
           <CNavLink
-            // href="javascript:void(0);"
+            href="javascript:void(0);"
             active={activeKey === 9}
             onClick={() => setActiveKey(9)}
           >
