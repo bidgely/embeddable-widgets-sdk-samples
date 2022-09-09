@@ -13,7 +13,7 @@ import {
 import InitialiseSdk from "../InitialiseSdk/InitialiseSdk";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import "../formPage/Formpage.css";
+import "./Formpage.css";
 import axios from "axios";
 
 function callWhiteList(apiEndPoint, oauthClientId, accessToken) {

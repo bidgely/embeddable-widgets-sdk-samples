@@ -1,8 +1,8 @@
 /* eslint-disable */
 import "./App.css";
-import FormPage from "./formPage/FormPage";
+import FormPage from "./components/formPage/FormPage";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import InitialiseSdk from "./InitialiseSdk/InitialiseSdk";
+import InitialiseSdk from "./components/InitialiseSdk/InitialiseSdk";
 import { useState } from "react";
 import {
   CHeader,
