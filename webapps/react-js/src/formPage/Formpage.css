@@ -1,0 +1,11 @@
+.sdk-input-form{
+    padding: 25px;
+}
+
+.bold-weight{
+    font-weight: bold;
+}
+
+.sdk-input-form-error{
+    padding: 1px 25px;
+}
