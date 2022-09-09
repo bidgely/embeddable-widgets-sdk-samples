@@ -247,7 +247,7 @@ function FormPage(props) {
 
         <CRow className="mb-3">
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
-            CSR Id *:
+            CSR Id :
           </CFormLabel>
           <CCol md={4}>
             <CFormInput
@@ -357,7 +357,12 @@ function FormPage(props) {
                 className="ci-primary"
               ></path>
             </svg>
-            <div>{errorMessage} Soon a button to whitelist from here</div>
+            <div>{errorMessage}</div>
+          </CAlert>
+          <CAlert color="info" className="d-flex align-items-center">
+            <div>
+              (Note : Soon a button to whitelist from here Will be added)
+            </div>
           </CAlert>
         </CCol>
       ) : (

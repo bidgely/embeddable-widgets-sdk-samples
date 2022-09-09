@@ -40,7 +40,7 @@ function TabViewWidgets(props) {
             active={activeKey === 4}
             onClick={() => setActiveKey(4)}
           >
-            Bidgely Bill Itemisation
+            Bill Itemisation
           </CNavLink>
         </CNavItem>
         <CNavItem>
@@ -49,7 +49,7 @@ function TabViewWidgets(props) {
             active={activeKey === 5}
             onClick={() => setActiveKey(5)}
           >
-            Bidgely Rate Plan Comparision
+            Rate Plan Comparision
           </CNavLink>
         </CNavItem>
         <CNavItem>
@@ -58,7 +58,7 @@ function TabViewWidgets(props) {
             active={activeKey === 6}
             onClick={() => setActiveKey(6)}
           >
-            Bidgely Next Bill Projection
+            Next Bill Projection
           </CNavLink>
         </CNavItem>
         <CNavItem>
@@ -67,7 +67,7 @@ function TabViewWidgets(props) {
             active={activeKey === 7}
             onClick={() => setActiveKey(7)}
           >
-            Bidgely Recommendation top tips
+            Recommendation top tips
           </CNavLink>
         </CNavItem>
         <CNavItem>
@@ -76,7 +76,7 @@ function TabViewWidgets(props) {
             active={activeKey === 8}
             onClick={() => setActiveKey(8)}
           >
-            Bidgely Recommendation tips
+            Recommendation tips
           </CNavLink>
         </CNavItem>
         <CNavItem>
@@ -85,7 +85,7 @@ function TabViewWidgets(props) {
             active={activeKey === 9}
             onClick={() => setActiveKey(9)}
           >
-            Bidgely High Bill analyser
+            High Bill analyser
           </CNavLink>
         </CNavItem>
       </CNav>
