@@ -97,7 +97,8 @@ function FormPage(props) {
         userId,
         csrId,
         fuelType,
-        accountType
+        accountType,
+        true
       ).then((data) => {
         props.onChangeField("SDK_RESPONSE", data);
         if (data.messageType === "SUCCESS") {
@@ -107,7 +108,6 @@ function FormPage(props) {
           history.push("/dashboard");
         } else {
           setResponseMessgae(data?.data?.errorMessage);
-          console.log(responseMessage);
         }
       });
     }
@@ -116,7 +116,7 @@ function FormPage(props) {
 
   const handleOauthChange = (event) => {
     setOauthClient(event.target.value);
-    props.onChangeField("CHANGE_FIELD1", event.target.value);
+    props.onChangeField("oauthClient", event.target.value);
   };
 
   if (responseMessage) {
@@ -125,15 +125,15 @@ function FormPage(props) {
   }
 
   useEffect(() => {
-    props.onChangeField("CHANGE_FIELD1", oauthClient);
-    props.onChangeField("CHANGE_FIELD2", apiEndPoint);
-    props.onChangeField("CHANGE_FIELD3", accessToken);
-    props.onChangeField("CHANGE_FIELD4", csrId);
-    props.onChangeField("CHANGE_FIELD5", fuelType);
-    props.onChangeField("CHANGE_FIELD6", accountType);
-    props.onChangeField("CHANGE_FIELD7", aesKey);
-    props.onChangeField("CHANGE_FIELD8", iv);
-    props.onChangeField("CHANGE_FIELD9", userId);
+    props.onChangeField("oauthClient", oauthClient);
+    props.onChangeField("apiEndPoint", apiEndPoint);
+    props.onChangeField("accessToken", accessToken);
+    props.onChangeField("csrId", csrId);
+    props.onChangeField("fuelType", fuelType);
+    props.onChangeField("accountType", accountType);
+    props.onChangeField("aesKey", aesKey);
+    props.onChangeField("iv", iv);
+    props.onChangeField("userId", userId);
   });
 
   return (
@@ -172,7 +172,7 @@ function FormPage(props) {
               id={apiEndPoint}
               onChange={(e) => {
                 setApiEndPoint(e.target.value);
-                props.onChangeField("CHANGE_FIELD2", e.target.value);
+                props.onChangeField("apiEndPoint", e.target.value);
               }}
               required
             />
@@ -191,7 +191,7 @@ function FormPage(props) {
               id={accessToken}
               onChange={(e) => {
                 setAccessToken(e.target.value);
-                props.onChangeField("CHANGE_FIELD3", e.target.value);
+                props.onChangeField("accessToken", e.target.value);
               }}
               required
             />
@@ -210,7 +210,7 @@ function FormPage(props) {
               id={aesKey}
               onChange={(e) => {
                 setAesKey(e.target.value);
-                props.onChangeField("CHANGE_FIELD7", e.target.value);
+                props.onChangeField("aesKey", e.target.value);
               }}
               required
             />
@@ -229,7 +229,7 @@ function FormPage(props) {
               id={iv}
               onChange={(e) => {
                 setIv(e.target.value);
-                props.onChangeField("CHANGE_FIELD8", e.target.value);
+                props.onChangeField("iv", e.target.value);
               }}
               required
             />
@@ -248,7 +248,7 @@ function FormPage(props) {
               id={userId}
               onChange={(e) => {
                 setUserId(e.target.value);
-                props.onChangeField("CHANGE_FIELD9", e.target.value);
+                props.onChangeField("userId", e.target.value);
               }}
               required
             />
@@ -267,7 +267,7 @@ function FormPage(props) {
               id={csrId}
               onChange={(e) => {
                 setCsrId(e.target.value);
-                props.onChangeField("CHANGE_FIELD4", e.target.value);
+                props.onChangeField("csrId", e.target.value);
               }}
             />
           </CCol>
@@ -285,7 +285,7 @@ function FormPage(props) {
               value={fuelType}
               onChange={(e) => {
                 setFuelType(e.target.value);
-                props.onChangeField("CHANGE_FIELD5", fuelType);
+                props.onChangeField("fuelType", fuelType);
               }}
               required
             >
@@ -309,7 +309,7 @@ function FormPage(props) {
               value={accountType}
               onChange={(e) => {
                 setAccountType(e.target.value);
-                props.onChangeField("CHANGE_FIELD6", e.target.value);
+                props.onChangeField("accountType", e.target.value);
               }}
               required
             >
@@ -371,20 +371,6 @@ function FormPage(props) {
       ) : (
         <></>
       )}
-
-      {/* {initialiseWidget && (
-        <InitialiseSdk
-          oauthClient={oauthClient}
-          apiEndPoint={apiEndPoint}
-          accessToken={accessToken}
-          aesKey={aesKey}
-          iv={iv}
-          userId={userId}
-          csrId={csrId}
-          fuelType={fuelType}
-          accountType={accountType}
-        ></InitialiseSdk>
-      )} */}
     </div>
   );
 }

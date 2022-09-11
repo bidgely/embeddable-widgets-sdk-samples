@@ -13,47 +13,47 @@ const intialState = {
 
 const reducer = (state = intialState, action) => {
   switch (action.type) {
-    case "CHANGE_FIELD1":
+    case "oauthClient":
       return {
         ...state,
         oauthClient: action.value,
       };
-    case "CHANGE_FIELD2":
+    case "apiEndPoint":
       return {
         ...state,
         apiEndPoint: action.value,
       };
-    case "CHANGE_FIELD3":
+    case "accessToken":
       return {
         ...state,
         accessToken: action.value,
       };
-    case "CHANGE_FIELD4":
+    case "csrId":
       return {
         ...state,
         csrId: action.value,
       };
-    case "CHANGE_FIELD5":
+    case "fuelType":
       return {
         ...state,
         fuelType: action.value,
       };
-    case "CHANGE_FIELD6":
+    case "accountType":
       return {
         ...state,
         accountType: action.value,
       };
-    case "CHANGE_FIELD7":
+    case "aesKey":
       return {
         ...state,
         aesKey: action.value,
       };
-    case "CHANGE_FIELD8":
+    case "iv":
       return {
         ...state,
         iv: action.value,
       };
-    case "CHANGE_FIELD9":
+    case "userId":
       return {
         ...state,
         userId: action.value,

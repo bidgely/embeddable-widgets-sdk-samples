@@ -1,13 +1,13 @@
 /* eslint-disable */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CNavItem, CNavLink, CNav, CTabContent, CTabPane } from "@coreui/react";
 import "./TabView.css";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { RenderWidgetSdk } from "../../service/bidgely-sdk-service";
 
 function TabViewWidgets(props) {
   const history = useHistory();
-  const [activeKey, setActiveKey] = useState(1);
   if (
     !props.widgetResponseObject ||
     props.widgetResponseObject.messageType !== "SUCCESS"
@@ -15,6 +15,34 @@ function TabViewWidgets(props) {
     //route back to form page
     history.push("/");
   }
+
+  const [activeKey, setActiveKey] = useState(1);
+
+  // console.log("instance id dekh", props.widgetResponseObject.data);
+  // useEffect(() => {
+  //   RenderWidgetSdk(
+  //     props.widgetResponseObject.data.instanceId,
+  //     "bidgely-home-survey",
+  //     {},
+  //     {}
+  //   ).then((res) => {
+  //     console.log(res);
+  //   });
+  // });
+
+  // const changeWidget = (widgetId) => {
+  //   setActiveKey(widgetId);
+  //   console.log("trying wid4 ", props.widgetResponseObject.data.instanceId);
+  //   RenderWidgetSdk(
+  //     props.widgetResponseObject.data.instanceId,
+  //     "bidgely-bill-itemisation",
+  //     {},
+  //     {}
+  //   ).then((res) => {
+  //     console.log(res);
+  //   });
+  // };
+
   return (
     <div className="tab-view">
       <CNav className="tab-list" variant="tabs" role="tablist">
@@ -49,7 +77,7 @@ function TabViewWidgets(props) {
           <CNavLink
             href="javascript:void(0);"
             active={activeKey === 4}
-            onClick={() => setActiveKey(4)}
+            onClick={() => changeWidget(4)}
           >
             Bill Itemisation
           </CNavLink>
