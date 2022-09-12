@@ -20,15 +20,13 @@ import {
 import FuelChangeService from "../../service/fuel-change-service";
 import { connect } from "react-redux";
 import { useDispatch } from "react-redux";
-import {
-  onChangeAuthField
-} from "../../state/reducers/AuthReducer";
+import { onChangeAuthField } from "../../state/reducers/AuthReducer";
 
 function AppHeader(props) {
   const dispatch = useDispatch();
   const currentLocation = useLocation();
 
-  const [activeFuel, changeActiveFuel] = useState(props?.fuelType);
+  const [activeFuel, changeActiveFuel] = useState(false);
   const homePath = currentLocation.pathname !== "/" || false;
   const [fuelChange, changeFuel] = useState(false);
 
@@ -59,13 +57,8 @@ function AppHeader(props) {
           {homePath ? (
             <CCollapse className="header-collapse" visible={true}>
               <CHeaderNav>
-                <CNavItem>
-                  <CNavLink href="/">Form Page</CNavLink>
-                </CNavItem>
                 <CNavItem className="nav">
-                  <CNavLink href="/" active>
-                    Home
-                  </CNavLink>
+                  <Link to="/">Home</Link>
                 </CNavItem>
                 <CNavItem className="nav">
                   <Link to="/compare">Compare</Link>
