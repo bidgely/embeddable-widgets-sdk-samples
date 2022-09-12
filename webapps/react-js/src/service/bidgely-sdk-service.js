@@ -72,3 +72,18 @@ export function InitialiseBidgelySdk(
     }
   });
 }
+
+export function RenderWidgetSdk(instanceId, widgetId, configs, translations) {
+  const renderParams = { instanceId, widgetId, configs, translations };
+
+  return new Promise((resolve, reject) => {
+    try {
+      BidgelyWebSdk.renderWidget(renderParams, (data) => {
+        console.log("BidgelyWebSdk renderWidget: ", data);
+        resolve(data);
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}

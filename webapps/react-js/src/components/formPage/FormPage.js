@@ -18,7 +18,10 @@ import axios from "axios";
 
 import { InitialiseBidgelySdk } from "../../service/bidgely-sdk-service";
 import { setFormDataToLocalStorage } from "../../utils/LocalStorageUtils";
-import { onChangeAuthField, setSdkInitInfo } from "../../state/reducers/AuthReducer";
+import {
+  onChangeAuthField,
+  setSdkInitInfo,
+} from "../../state/reducers/AuthReducer";
 import { setSdkInstance } from "../../state/reducers/BidgelySdkReducer";
 
 function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
@@ -40,10 +43,9 @@ function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
 }
 
 function FormPage(props) {
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-
-  let localStorageInfo = {}
+  let localStorageInfo = {};
 
   const [validated, setValidated] = useState(false);
 
@@ -62,25 +64,24 @@ function FormPage(props) {
     localStorageInfo = JSON.parse(
       localStorage.getItem("bidgelySdkInitInfo") || "{}"
     );
-  
-    setOauthClient(localStorageInfo.oauthClient)
-    setApiEndPoint(localStorageInfo.apiEndPoint)
-    setAccessToken(localStorageInfo.accessToken)
-    setAesKey(localStorageInfo.aesKey)
-    setIv(localStorageInfo.iv)
-    setUserId(localStorageInfo.userId)
-    setCsrId(localStorageInfo.csrId)
-    setFuelType(localStorageInfo.fuelType)
-    setAccountType(localStorageInfo.accountType)
 
-  }, [])
-  
+    setOauthClient(localStorageInfo.oauthClient);
+    setApiEndPoint(localStorageInfo.apiEndPoint);
+    setAccessToken(localStorageInfo.accessToken);
+    setAesKey(localStorageInfo.aesKey);
+    setIv(localStorageInfo.iv);
+    setUserId(localStorageInfo.userId);
+    setCsrId(localStorageInfo.csrId);
+    setFuelType(localStorageInfo.fuelType);
+    setAccountType(localStorageInfo.accountType);
+  }, []);
+
   const history = useHistory();
   const [responseMessage, setResponseMessgae] = useState();
 
   const onChangeField = (fieldName, fieldValue) => {
-    dispatch(onChangeAuthField(fieldName, fieldValue))
-  }
+    dispatch(onChangeAuthField(fieldName, fieldValue));
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -99,13 +100,31 @@ function FormPage(props) {
         userId,
         csrId,
         fuelType,
-        accountType
+        accountType,
+        true
       ).then((data) => {
         onChangeField("SDK_RESPONSE", data);
-        if (data.messageType === "SUCCESS") {      
+        if (data.messageType === "SUCCESS") {
           setResponseMessgae(data.messageType);
-          dispatch(setSdkInstance(data.data.instanceId, userId, fuelType, accountType))
-          dispatch(setSdkInitInfo(oauthClient,
+          dispatch(
+            setSdkInstance(data.data.instanceId, userId, fuelType, accountType)
+          );
+          dispatch(
+            setSdkInitInfo(
+              oauthClient,
+              apiEndPoint,
+              accessToken,
+              aesKey,
+              iv,
+              userId,
+              csrId,
+              fuelType,
+              accountType
+            )
+          );
+
+          setFormDataToLocalStorage({
+            oauthClient,
             apiEndPoint,
             accessToken,
             aesKey,
@@ -113,17 +132,12 @@ function FormPage(props) {
             userId,
             csrId,
             fuelType,
-            accountType))
-
-          setFormDataToLocalStorage({
-            oauthClient, apiEndPoint, accessToken, aesKey, iv, 
-            userId, csrId, fuelType, accountType
+            accountType,
           });
           //need to handle success styling from timeout to loader
           history.push("/dashboard");
         } else {
           setResponseMessgae(data?.data?.errorMessage);
-          console.log(responseMessage);
         }
       });
     }
@@ -132,7 +146,7 @@ function FormPage(props) {
 
   const handleOauthChange = (event) => {
     setOauthClient(event.target.value);
-    onChangeField("CHANGE_FIELD1", event.target.value);
+    onChangeField("oauthClient", event.target.value);
   };
 
   if (responseMessage) {
@@ -141,15 +155,15 @@ function FormPage(props) {
   }
 
   useEffect(() => {
-    onChangeField("CHANGE_FIELD1", oauthClient);
-    onChangeField("CHANGE_FIELD2", apiEndPoint);
-    onChangeField("CHANGE_FIELD3", accessToken);
-    onChangeField("CHANGE_FIELD4", csrId);
-    onChangeField("CHANGE_FIELD5", fuelType);
-    onChangeField("CHANGE_FIELD6", accountType);
-    onChangeField("CHANGE_FIELD7", aesKey);
-    onChangeField("CHANGE_FIELD8", iv);
-    onChangeField("CHANGE_FIELD9", userId);
+    onChangeField("oauthClient", oauthClient);
+    onChangeField("apiEndPoint", apiEndPoint);
+    onChangeField("accessToken", accessToken);
+    onChangeField("csrId", csrId);
+    onChangeField("fuelType", fuelType);
+    onChangeField("accountType", accountType);
+    onChangeField("aesKey", aesKey);
+    onChangeField("iv", iv);
+    onChangeField("userId", userId);
   });
 
   return (
@@ -188,7 +202,7 @@ function FormPage(props) {
               id={apiEndPoint}
               onChange={(e) => {
                 setApiEndPoint(e.target.value);
-                onChangeField("CHANGE_FIELD2", e.target.value);
+                onChangeField("apiEndPoint", e.target.value);
               }}
               required
             />
@@ -207,7 +221,7 @@ function FormPage(props) {
               id={accessToken}
               onChange={(e) => {
                 setAccessToken(e.target.value);
-                onChangeField("CHANGE_FIELD3", e.target.value);
+                onChangeField("accessToken", e.target.value);
               }}
               required
             />
@@ -226,7 +240,7 @@ function FormPage(props) {
               id={aesKey}
               onChange={(e) => {
                 setAesKey(e.target.value);
-                onChangeField("CHANGE_FIELD7", e.target.value);
+                onChangeField("aesKey", e.target.value);
               }}
               required
             />
@@ -245,7 +259,7 @@ function FormPage(props) {
               id={iv}
               onChange={(e) => {
                 setIv(e.target.value);
-                onChangeField("CHANGE_FIELD8", e.target.value);
+                onChangeField("iv", e.target.value);
               }}
               required
             />
@@ -264,7 +278,7 @@ function FormPage(props) {
               id={userId}
               onChange={(e) => {
                 setUserId(e.target.value);
-                onChangeField("CHANGE_FIELD9", e.target.value);
+                onChangeField("userId", e.target.value);
               }}
               required
             />
@@ -283,7 +297,7 @@ function FormPage(props) {
               id={csrId}
               onChange={(e) => {
                 setCsrId(e.target.value);
-                onChangeField("CHANGE_FIELD4", e.target.value);
+                onChangeField("csrId", e.target.value);
               }}
             />
           </CCol>
@@ -301,7 +315,7 @@ function FormPage(props) {
               value={fuelType}
               onChange={(e) => {
                 setFuelType(e.target.value);
-                onChangeField("CHANGE_FIELD5", fuelType);
+                onChangeField("fuelType", fuelType);
               }}
               required
             >
@@ -325,7 +339,7 @@ function FormPage(props) {
               value={accountType}
               onChange={(e) => {
                 setAccountType(e.target.value);
-                onChangeField("CHANGE_FIELD6", e.target.value);
+                onChangeField("accountType", e.target.value);
               }}
               required
             >
@@ -387,20 +401,6 @@ function FormPage(props) {
       ) : (
         <></>
       )}
-
-      {/* {initialiseWidget && (
-        <InitialiseSdk
-          oauthClient={oauthClient}
-          apiEndPoint={apiEndPoint}
-          accessToken={accessToken}
-          aesKey={aesKey}
-          iv={iv}
-          userId={userId}
-          csrId={csrId}
-          fuelType={fuelType}
-          accountType={accountType}
-        ></InitialiseSdk>
-      )} */}
     </div>
   );
 }
