@@ -18,7 +18,10 @@ import axios from "axios";
 
 import { InitialiseBidgelySdk } from "../../service/bidgely-sdk-service";
 import { setFormDataToLocalStorage } from "../../utils/LocalStorageUtils";
-import { onChangeAuthField, setSdkInitInfo } from "../../state/reducers/AuthReducer";
+import {
+  onChangeAuthField,
+  setSdkInitInfo,
+} from "../../state/reducers/AuthReducer";
 import { setSdkInstance } from "../../state/reducers/BidgelySdkReducer";
 
 function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
@@ -40,10 +43,9 @@ function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
 }
 
 function FormPage(props) {
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-
-  let localStorageInfo = {}
+  let localStorageInfo = {};
 
   const [validated, setValidated] = useState(false);
 
@@ -62,25 +64,24 @@ function FormPage(props) {
     localStorageInfo = JSON.parse(
       localStorage.getItem("bidgelySdkInitInfo") || "{}"
     );
-  
-    setOauthClient(localStorageInfo.oauthClient)
-    setApiEndPoint(localStorageInfo.apiEndPoint)
-    setAccessToken(localStorageInfo.accessToken)
-    setAesKey(localStorageInfo.aesKey)
-    setIv(localStorageInfo.iv)
-    setUserId(localStorageInfo.userId)
-    setCsrId(localStorageInfo.csrId)
-    setFuelType(localStorageInfo.fuelType)
-    setAccountType(localStorageInfo.accountType)
 
-  }, [])
-  
+    setOauthClient(localStorageInfo.oauthClient);
+    setApiEndPoint(localStorageInfo.apiEndPoint);
+    setAccessToken(localStorageInfo.accessToken);
+    setAesKey(localStorageInfo.aesKey);
+    setIv(localStorageInfo.iv);
+    setUserId(localStorageInfo.userId);
+    setCsrId(localStorageInfo.csrId);
+    setFuelType(localStorageInfo.fuelType);
+    setAccountType(localStorageInfo.accountType);
+  }, []);
+
   const history = useHistory();
   const [responseMessage, setResponseMessgae] = useState();
 
   const onChangeField = (fieldName, fieldValue) => {
-    dispatch(onChangeAuthField(fieldName, fieldValue))
-  }
+    dispatch(onChangeAuthField(fieldName, fieldValue));
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -103,10 +104,27 @@ function FormPage(props) {
         true
       ).then((data) => {
         onChangeField("SDK_RESPONSE", data);
-        if (data.messageType === "SUCCESS") {      
+        if (data.messageType === "SUCCESS") {
           setResponseMessgae(data.messageType);
-          dispatch(setSdkInstance(data.data.instanceId, userId, fuelType, accountType))
-          dispatch(setSdkInitInfo(oauthClient,
+          dispatch(
+            setSdkInstance(data.data.instanceId, userId, fuelType, accountType)
+          );
+          dispatch(
+            setSdkInitInfo(
+              oauthClient,
+              apiEndPoint,
+              accessToken,
+              aesKey,
+              iv,
+              userId,
+              csrId,
+              fuelType,
+              accountType
+            )
+          );
+
+          setFormDataToLocalStorage({
+            oauthClient,
             apiEndPoint,
             accessToken,
             aesKey,
@@ -114,11 +132,7 @@ function FormPage(props) {
             userId,
             csrId,
             fuelType,
-            accountType))
-
-          setFormDataToLocalStorage({
-            oauthClient, apiEndPoint, accessToken, aesKey, iv, 
-            userId, csrId, fuelType, accountType
+            accountType,
           });
           //need to handle success styling from timeout to loader
           history.push("/dashboard");
@@ -132,7 +146,6 @@ function FormPage(props) {
 
   const handleOauthChange = (event) => {
     setOauthClient(event.target.value);
-    props.onChangeField("oauthClient", event.target.value);
     onChangeField("oauthClient", event.target.value);
   };
 
@@ -142,15 +155,6 @@ function FormPage(props) {
   }
 
   useEffect(() => {
-    props.onChangeField("oauthClient", oauthClient);
-    props.onChangeField("apiEndPoint", apiEndPoint);
-    props.onChangeField("accessToken", accessToken);
-    props.onChangeField("csrId", csrId);
-    props.onChangeField("fuelType", fuelType);
-    props.onChangeField("accountType", accountType);
-    props.onChangeField("aesKey", aesKey);
-    props.onChangeField("iv", iv);
-    props.onChangeField("userId", userId);
     onChangeField("oauthClient", oauthClient);
     onChangeField("apiEndPoint", apiEndPoint);
     onChangeField("accessToken", accessToken);

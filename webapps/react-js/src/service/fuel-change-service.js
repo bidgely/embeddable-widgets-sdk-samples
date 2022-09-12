@@ -1,9 +1,18 @@
 /* eslint-disable */
 
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { InitialiseBidgelySdk } from "./bidgely-sdk-service";
+import { useSelector } from "react-redux";
+import {
+  onChangeAuthField,
+  setSdkInitInfo,
+} from "../state/reducers/AuthReducer";
+import { setSdkInstance } from "../state/reducers/BidgelySdkReducer";
 
-function FuelChangeService(props) {
+function FuelChangeService() {
+  const dispatch = useDispatch();
+  const props = useSelector((state) => state.auth);
+  console.log(props);
   InitialiseBidgelySdk(
     props.oauthClient,
     props.apiEndPoint,
@@ -16,25 +25,32 @@ function FuelChangeService(props) {
     props.accountType,
     false
   ).then((data) => {
-    props.onChangeField("SDK_RESPONSE", data);
+    dispatch(onChangeAuthField("SDK_RESPONSE", data));
     if (data.messageType === "SUCCESS") {
-      //need to handle success styling from timeout to loader
-      history.push("/dashboard");
+      dispatch(
+        setSdkInstance(
+          data.data.instanceId,
+          props.userId,
+          props.fuelType,
+          props.accountType
+        )
+      );
+      dispatch(
+        setSdkInitInfo(
+          props.oauthClient,
+          props.apiEndPoint,
+          props.accessToken,
+          props.aesKey,
+          props.iv,
+          props.userId,
+          props.csrId,
+          props.fuelType,
+          props.accountType
+        )
+      );
+      //history.push("/dashboard");
     }
   });
 }
 
-const mapStatetoProps = (state) => {
-  return {
-    ...state,
-  };
-};
-
-const mapDispatchtoProps = (dispatch) => {
-  return {
-    onChangeField: (fieldName, fieldValue) =>
-      dispatch({ type: fieldName, value: fieldValue }),
-  };
-};
-
-export default connect(mapStatetoProps, mapDispatchtoProps)(FuelChangeService);
+export default FuelChangeService;

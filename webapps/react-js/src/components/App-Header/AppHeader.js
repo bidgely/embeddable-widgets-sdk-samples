@@ -19,8 +19,13 @@ import {
 } from "@coreui/react";
 import FuelChangeService from "../../service/fuel-change-service";
 import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
+import {
+  onChangeAuthField
+} from "../../state/reducers/AuthReducer";
 
 function AppHeader(props) {
+  const dispatch = useDispatch();
   const currentLocation = useLocation();
 
   const [activeFuel, changeActiveFuel] = useState(props?.fuelType);
@@ -29,7 +34,7 @@ function AppHeader(props) {
 
   const handleFuelTypeChange = (event) => {
     //update the fuel in state using text from event currently
-    props.onChangeField("fuelType", event.target.text);
+    dispatch(onChangeAuthField("fuelType", event.target.text));
     changeFuel(true);
   };
 

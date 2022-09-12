@@ -5,16 +5,10 @@ import "./TabView.css";
 import { connect, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { RenderWidgetSdk } from "../../service/bidgely-sdk-service";
+import { setSdkInstance } from "../../state/reducers/BidgelySdkReducer";
 
 function TabViewWidgets(props) {
   const history = useHistory();
-  if (
-    !props.widgetResponseObject ||
-    props.widgetResponseObject.messageType !== "SUCCESS"
-  ) {
-    //route back to form page
-    history.push("/");
-  }
 
   // console.log("instance id dekh", props.widgetResponseObject.data);
   // useEffect(() => {
@@ -84,7 +78,7 @@ function TabViewWidgets(props) {
           <CNavLink
             href="javascript:void(0);"
             active={activeKey === 4}
-            onClick={() => changeWidget(4)}
+            onClick={() => setActiveKey(4)}
           >
             Bill Itemisation
           </CNavLink>
