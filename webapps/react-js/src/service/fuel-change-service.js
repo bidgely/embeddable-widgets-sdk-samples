@@ -12,7 +12,6 @@ import { setSdkInstance } from "../state/reducers/BidgelySdkReducer";
 function FuelChangeService() {
   const dispatch = useDispatch();
   const props = useSelector((state) => state.auth);
-  console.log(props);
   InitialiseBidgelySdk(
     props.oauthClient,
     props.apiEndPoint,

@@ -10,7 +10,6 @@ import { setSdkInstance } from "../../state/reducers/BidgelySdkReducer";
 function TabViewWidgets(props) {
   const history = useHistory();
 
-  // console.log("instance id dekh", props.widgetResponseObject.data);
   // useEffect(() => {
   //   RenderWidgetSdk(
   //     props.widgetResponseObject.data.instanceId,
@@ -34,6 +33,7 @@ function TabViewWidgets(props) {
   //     console.log(res);
   //   });
   // };
+  
   const [activeKey, setActiveKey] = useState(1);
   const widgetResp = useSelector((state) => state.auth.widgetResponseObject);
 
