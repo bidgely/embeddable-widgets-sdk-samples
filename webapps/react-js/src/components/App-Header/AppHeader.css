@@ -4,3 +4,11 @@
   /* position: relative;
   right: 40%; */
 }
+
+.App-header {
+  height: 60px !important;
+}
+
+.nav {
+  margin: 10px;
+}

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import "./AppHeader.css";
-import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   CHeader,
   CContainer,
@@ -39,7 +39,7 @@ function AppHeader(props) {
 
   return (
     <div>
-      <CHeader>
+      <CHeader className="App-header">
         <CContainer fluid>
           <CImage
             align="end"
@@ -56,6 +56,14 @@ function AppHeader(props) {
               <CHeaderNav>
                 <CNavItem>
                   <CNavLink href="/">Form Page</CNavLink>
+                </CNavItem>
+                <CNavItem className="nav">
+                  <CNavLink href="/" active>
+                    Home
+                  </CNavLink>
+                </CNavItem>
+                <CNavItem className="nav">
+                  <Link to="/compare">Compare</Link>
                 </CNavItem>
                 <CDropdown variant="nav-item">
                   <CDropdownToggle color="secondary">Switch</CDropdownToggle>

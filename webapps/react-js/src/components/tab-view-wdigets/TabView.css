@@ -1,8 +1,25 @@
 .tab-view {
+  height: 100%;
   margin-top: 10px;
   margin-left: 5px;
+  overflow-y: scroll;
+  background-color: #F9F9F9;
 }
 
 .nav-link {
   color: black;
+}
+
+.widget-container {
+  width: 100%;
+  max-width: 1200px;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.tab-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }

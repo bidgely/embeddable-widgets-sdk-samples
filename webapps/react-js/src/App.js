@@ -6,22 +6,25 @@ import { useState } from "react";
 import TabViewWidgets from "./components/tab-view-wdigets/TabViewWidgets";
 import AppHeader from "./components/App-Header/AppHeader";
 import AppFooter from "./components/App-Footer/AppFooter";
+import CompareComponent from "./components/Compare/CompareComponent";
+import RouteGuard from "./components/RouteGuard";
+import { useSelector } from "react-redux";
 
 function App() {
   const [visible, setVisible] = useState(true);
+  const accessToken = useSelector(state => state.auth.accessToken)
 
   return (
-    <div>
+    <div className="App">
       <Router>
         <AppHeader />
-        <Switch>
-          <Route path="/" exact>
-            <FormPage />
-          </Route>
-          <Route path="/dashboard">
-            <TabViewWidgets />
-          </Route>
-        </Switch>
+        <div className="appContent">
+          <Switch>
+            <Route path="/" exact component={FormPage}/>
+            <RouteGuard path="/dashboard" auth={accessToken !== ""} component={TabViewWidgets}/>
+            <RouteGuard path="/compare" auth={accessToken !== ""} component={CompareComponent}/>
+          </Switch>
+        </div>
         <AppFooter />
       </Router>
     </div>

@@ -11,7 +11,25 @@ const intialState = {
   widgetResponseObject: "",
 };
 
-const reducer = (state = intialState, action) => {
+export function setSdkInitInfo({oauthClient, apiEndPoint, accessToken, csrId, 
+                               fuelType, accountType, aesKey, iv, userId}) {
+
+  return dispatch => {
+    dispatch({ type: "SET_SDK_INIT_INFO", payload : {
+        oauthClient, apiEndPoint, accessToken, csrId, 
+        fuelType, accountType, aesKey, iv, userId
+      } 
+    })
+  }
+}
+
+export function onChangeAuthField(fieldName, fieldValue) {
+  return dispatch => {
+    dispatch({ type: fieldName, value: fieldValue })
+  }
+}
+
+export const AuthReducer = (state = intialState, action) => {
   switch (action.type) {
     case "oauthClient":
       return {
@@ -63,11 +81,24 @@ const reducer = (state = intialState, action) => {
         ...state,
         widgetResponseObject: action.value,
       };
+
+    case "SET_SDK_INIT_INFO":
+      const payload = action.payload
+      return {
+        ...state,
+        oauthClient : payload.oauthClient,
+        apiEndPoint : payload.apiEndPoint,
+        accessToken : payload.accessToken,
+        csrId       : payload.csrId,
+        fuelType    : payload.fuelType,
+        accountType : payload.accountType,
+        aesKey      : payload.aesKey,
+        iv          : payload.iv,
+        userId      : payload.userId,
+      }
     default:
       break;
   }
 
   return state;
 };
-
-export default reducer;

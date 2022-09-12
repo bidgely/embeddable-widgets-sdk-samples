@@ -12,12 +12,14 @@ import {
 } from "@coreui/react";
 
 import { useHistory } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./Formpage.css";
 import axios from "axios";
 
 import { InitialiseBidgelySdk } from "../../service/bidgely-sdk-service";
-import { setFormDataToLocalStorage } from "../../helpers/helpers";
+import { setFormDataToLocalStorage } from "../../utils/LocalStorageUtils";
+import { onChangeAuthField, setSdkInitInfo } from "../../state/reducers/AuthReducer";
+import { setSdkInstance } from "../../state/reducers/BidgelySdkReducer";
 
 function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
   //to Do Convert this to a input / api solution
@@ -38,47 +40,47 @@ function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
 }
 
 function FormPage(props) {
-  //getting localStorage to autofill last successfull sdk initialisation
-  const localStorageInfo = JSON.parse(
-    localStorage.getItem("bidgelySdkInitInfo") || "{}"
-  );
+
+  const dispatch = useDispatch()
+
+  let localStorageInfo = {}
 
   const [validated, setValidated] = useState(false);
-  const [oauthClient, setOauthClient] = localStorageInfo.oauthClient
-    ? useState(localStorageInfo.oauthClient)
-    : useState("");
 
-  const [apiEndPoint, setApiEndPoint] = localStorageInfo.apiEndPoint
-    ? useState(localStorageInfo.apiEndPoint)
-    : useState("");
+  const [oauthClient, setOauthClient] = useState("");
+  const [apiEndPoint, setApiEndPoint] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [aesKey, setAesKey] = useState("");
+  const [iv, setIv] = useState("");
+  const [userId, setUserId] = useState("");
+  const [csrId, setCsrId] = useState("");
+  const [fuelType, setFuelType] = useState("");
+  const [accountType, setAccountType] = useState("");
 
-  const [accessToken, setAccessToken] = localStorageInfo.accessToken
-    ? useState(localStorageInfo.accessToken)
-    : useState("");
+  useEffect(() => {
+    //getting localStorage to autofill last successfull sdk initialisation
+    localStorageInfo = JSON.parse(
+      localStorage.getItem("bidgelySdkInitInfo") || "{}"
+    );
+  
+    setOauthClient(localStorageInfo.oauthClient)
+    setApiEndPoint(localStorageInfo.apiEndPoint)
+    setAccessToken(localStorageInfo.accessToken)
+    setAesKey(localStorageInfo.aesKey)
+    setIv(localStorageInfo.iv)
+    setUserId(localStorageInfo.userId)
+    setCsrId(localStorageInfo.csrId)
+    setFuelType(localStorageInfo.fuelType)
+    setAccountType(localStorageInfo.accountType)
 
-  const [aesKey, setAesKey] = localStorageInfo.aesKey
-    ? useState(localStorageInfo.aesKey)
-    : useState("");
-  const [iv, setIv] = localStorageInfo.iv
-    ? useState(localStorageInfo.iv)
-    : useState("");
-
-  const [userId, setUserId] = localStorageInfo.userId
-    ? useState(localStorageInfo.userId)
-    : useState("");
-
-  const [csrId, setCsrId] = localStorageInfo.csrId
-    ? useState(localStorageInfo.csrId)
-    : useState("");
-  const [fuelType, setFuelType] = localStorageInfo.fuelType
-    ? useState(localStorageInfo.fuelType)
-    : useState("");
-  const [accountType, setAccountType] = localStorageInfo.accountType
-    ? useState(localStorageInfo.accountType)
-    : useState("");
-
+  }, [])
+  
   const history = useHistory();
   const [responseMessage, setResponseMessgae] = useState();
+
+  const onChangeField = (fieldName, fieldValue) => {
+    dispatch(onChangeAuthField(fieldName, fieldValue))
+  }
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -100,10 +102,24 @@ function FormPage(props) {
         accountType,
         true
       ).then((data) => {
-        props.onChangeField("SDK_RESPONSE", data);
-        if (data.messageType === "SUCCESS") {
+        onChangeField("SDK_RESPONSE", data);
+        if (data.messageType === "SUCCESS") {      
           setResponseMessgae(data.messageType);
-          setFormDataToLocalStorage(props);
+          dispatch(setSdkInstance(data.data.instanceId, userId, fuelType, accountType))
+          dispatch(setSdkInitInfo(oauthClient,
+            apiEndPoint,
+            accessToken,
+            aesKey,
+            iv,
+            userId,
+            csrId,
+            fuelType,
+            accountType))
+
+          setFormDataToLocalStorage({
+            oauthClient, apiEndPoint, accessToken, aesKey, iv, 
+            userId, csrId, fuelType, accountType
+          });
           //need to handle success styling from timeout to loader
           history.push("/dashboard");
         } else {
@@ -117,6 +133,7 @@ function FormPage(props) {
   const handleOauthChange = (event) => {
     setOauthClient(event.target.value);
     props.onChangeField("oauthClient", event.target.value);
+    onChangeField("oauthClient", event.target.value);
   };
 
   if (responseMessage) {
@@ -134,6 +151,15 @@ function FormPage(props) {
     props.onChangeField("aesKey", aesKey);
     props.onChangeField("iv", iv);
     props.onChangeField("userId", userId);
+    onChangeField("oauthClient", oauthClient);
+    onChangeField("apiEndPoint", apiEndPoint);
+    onChangeField("accessToken", accessToken);
+    onChangeField("csrId", csrId);
+    onChangeField("fuelType", fuelType);
+    onChangeField("accountType", accountType);
+    onChangeField("aesKey", aesKey);
+    onChangeField("iv", iv);
+    onChangeField("userId", userId);
   });
 
   return (
@@ -172,7 +198,7 @@ function FormPage(props) {
               id={apiEndPoint}
               onChange={(e) => {
                 setApiEndPoint(e.target.value);
-                props.onChangeField("apiEndPoint", e.target.value);
+                onChangeField("apiEndPoint", e.target.value);
               }}
               required
             />
@@ -191,7 +217,7 @@ function FormPage(props) {
               id={accessToken}
               onChange={(e) => {
                 setAccessToken(e.target.value);
-                props.onChangeField("accessToken", e.target.value);
+                onChangeField("accessToken", e.target.value);
               }}
               required
             />
@@ -210,7 +236,7 @@ function FormPage(props) {
               id={aesKey}
               onChange={(e) => {
                 setAesKey(e.target.value);
-                props.onChangeField("aesKey", e.target.value);
+                onChangeField("aesKey", e.target.value);
               }}
               required
             />
@@ -229,7 +255,7 @@ function FormPage(props) {
               id={iv}
               onChange={(e) => {
                 setIv(e.target.value);
-                props.onChangeField("iv", e.target.value);
+                onChangeField("iv", e.target.value);
               }}
               required
             />
@@ -248,7 +274,7 @@ function FormPage(props) {
               id={userId}
               onChange={(e) => {
                 setUserId(e.target.value);
-                props.onChangeField("userId", e.target.value);
+                onChangeField("userId", e.target.value);
               }}
               required
             />
@@ -267,7 +293,7 @@ function FormPage(props) {
               id={csrId}
               onChange={(e) => {
                 setCsrId(e.target.value);
-                props.onChangeField("csrId", e.target.value);
+                onChangeField("csrId", e.target.value);
               }}
             />
           </CCol>
@@ -285,7 +311,7 @@ function FormPage(props) {
               value={fuelType}
               onChange={(e) => {
                 setFuelType(e.target.value);
-                props.onChangeField("fuelType", fuelType);
+                onChangeField("fuelType", fuelType);
               }}
               required
             >
@@ -309,7 +335,7 @@ function FormPage(props) {
               value={accountType}
               onChange={(e) => {
                 setAccountType(e.target.value);
-                props.onChangeField("accountType", e.target.value);
+                onChangeField("accountType", e.target.value);
               }}
               required
             >
@@ -375,17 +401,4 @@ function FormPage(props) {
   );
 }
 
-const mapStatetoProps = (state) => {
-  return {
-    ...state,
-  };
-};
-
-const mapDispatchtoProps = (dispatch) => {
-  return {
-    onChangeField: (fieldName, fieldValue) =>
-      dispatch({ type: fieldName, value: fieldValue }),
-  };
-};
-
-export default connect(mapStatetoProps, mapDispatchtoProps)(FormPage);
+export default FormPage;
