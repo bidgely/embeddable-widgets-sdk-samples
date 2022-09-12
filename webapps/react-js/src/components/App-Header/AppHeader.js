@@ -18,7 +18,6 @@ import {
   CImage,
 } from "@coreui/react";
 import FuelChangeService from "../../service/fuel-change-service";
-import { connect } from "react-redux";
 import { useDispatch } from "react-redux";
 import { onChangeAuthField } from "../../state/reducers/AuthReducer";
 
@@ -99,17 +98,4 @@ function AppHeader(props) {
   );
 }
 
-const mapStatetoProps = (state) => {
-  return {
-    ...state,
-  };
-};
-
-const mapDispatchtoProps = (dispatch) => {
-  return {
-    onChangeField: (fieldName, fieldValue) =>
-      dispatch({ type: fieldName, value: fieldValue }),
-  };
-};
-
-export default connect(mapStatetoProps, mapDispatchtoProps)(AppHeader);
+export default AppHeader;
