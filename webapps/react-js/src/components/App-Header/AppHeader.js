@@ -24,6 +24,10 @@ function AppHeader() {
   const homePath = currentLocation.pathname !== "/" || false;
   const [visible, setVisible] = useState(true);
 
+  const navigate = (path) => {
+    
+  }
+
   return (
     <div>
       <CHeader className="App-header">
@@ -42,12 +46,12 @@ function AppHeader() {
             <CCollapse className="header-collapse" visible={visible}>
               <CHeaderNav>
                 <CNavItem className="nav">
-                  <CNavLink href="/" active>Home</CNavLink>
+                  <Link to="/" onClick={() => window.location.reload()} active>Home</Link>
                 </CNavItem>
                 <CNavItem className="nav">
                   <Link to="/compare">Compare</Link>
                 </CNavItem>
-                <CDropdown variant="nav-item">
+                {/* <CDropdown variant="nav-item">
                   <CDropdownToggle color="secondary">Switch</CDropdownToggle>
                   <CDropdownMenu>
                     <CDropdownItem href="/Dashboard">ELECTRIC</CDropdownItem>
@@ -57,7 +61,7 @@ function AppHeader() {
                       Something else here other home?
                     </CDropdownItem>
                   </CDropdownMenu>
-                </CDropdown>
+                </CDropdown> */}
                 {/* <CNavItem>
                 <CNavLink href="/" disabled>
                   Disabled

@@ -2,8 +2,7 @@ import React from "react";
 import styles from "./Compare.module.css"
 import CompareSectionComponent from "./CompareSectionComponent";
 
-function CompareComponent() {
-
+function CompareComponent() { 
   return (
     <div className={styles.compareRoot}>
       <div className={styles.compareMain}>

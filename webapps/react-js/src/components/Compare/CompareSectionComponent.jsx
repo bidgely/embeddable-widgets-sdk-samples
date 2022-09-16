@@ -1,23 +1,26 @@
 import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useRef } from "react";
 import { InitialiseBidgelySdk } from "../../service/bidgely-sdk-service";
 import { ACCOUNT_TYPE, FUEL_TYPE, BIDGELY_WIDGETS, BIDGELY_WIDGET_LABELS } from "../../utils/Constants";
 import styles from "./Compare.module.css"
 
 function CompareSectionComponent({id}) {
 
+  const containerRef = useRef(null)
+  const [oauthClient, setOauthClient] = useState("")
+  const [apiEndPoint, setApiEndPoint] = useState("")
+  const [accessToken, setAccessToken] = useState("")
+  const [aesKey, setAesKey] = useState("")
+  const [iv, setIv] = useState("")
   const [userId, setUserId] = useState("")
   const [fuelType, setFuelType] = useState(FUEL_TYPE.ELECTRIC)
   const [accountType, setAccountType] = useState(ACCOUNT_TYPE.RESIDENTIAL)
-  const [widget, setWidget] = useState(Object.keys(BIDGELY_WIDGETS)[0])
+  const [widget, setWidget] = useState(Object.keys(BIDGELY_WIDGETS)[6])
   const [loading, setIsLoading] = useState(false)
   const [initDone, setInitDone] = useState(false)
   const [instanceId, setInstanceId] = useState(null)
   const [error, setError] = useState(null)
   
-  const sdkInitInfo = useSelector(state => state.auth)
-
   const handleFuelTypeChange = (event) => {
     setFuelType(event.target.value)
   }
@@ -34,6 +37,26 @@ function CompareSectionComponent({id}) {
     setUserId(event.target.value)
   }
 
+  const handleClientChange = (event) => {
+    setOauthClient(event.target.value)
+  }
+
+  const handleApiEndPointChange = (event) => {
+    setApiEndPoint(event.target.value)
+  }
+
+  const handleAccessTokenChange = (event) => {
+    setAccessToken(event.target.value)
+  }
+
+  const handleAesKeyChange = (event) => {
+    setAesKey(event.target.value)
+  }
+
+  const handleIvChange = (event) => {
+    setIv(event.target.value)
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -42,11 +65,11 @@ function CompareSectionComponent({id}) {
     setIsLoading(true)
     setInitDone(false)
 
-    InitialiseBidgelySdk(sdkInitInfo.oauthClient, 
-      sdkInitInfo.apiEndPoint,
-      sdkInitInfo.accessToken,
-      sdkInitInfo.aesKey,
-      sdkInitInfo.iv,
+    InitialiseBidgelySdk(oauthClient, 
+      apiEndPoint,
+      accessToken,
+      aesKey,
+      iv,
       userId,
       null,
       fuelType,
@@ -55,29 +78,95 @@ function CompareSectionComponent({id}) {
 
         setIsLoading(false)
         if (resp.messageType !== "SUCCESS") {
+          setInitDone(false)
+          setError(resp.data)
           return
         }
 
         setInstanceId(resp.data.instanceId)
         setInitDone(true)
-
-        window.BidgelyWebSdk.renderWidget({
-          elementId : id,
-          instanceId : resp.data.instanceId,
-          widgetId : BIDGELY_WIDGETS[widget]
-        })
-
       })
-    
-      
-      
+
+    removeWidget()
   }
+
+  const removeWidget = () => {
+    const container = containerRef.current
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+  }
+
+  const appendWidget = () => {
+
+    const container = containerRef.current
+    const widgetId = BIDGELY_WIDGETS[widget]
+
+    const ele = document.createElement('div')
+    ele.setAttribute('class', 'widget')
+    ele.innerHTML = '<' + widgetId + ` id=${widget}-${id}>` + '</' + widgetId + '>'
+    container.appendChild(ele)
+  }
+
+  const renderWidget = (e) => {
+    e.preventDefault();
+
+    removeWidget()
+    appendWidget()
+
+    window.BidgelyWebSdk.renderWidget({
+      elementId : `${widget}-${id}`,
+      instanceId : instanceId,
+      widgetId : BIDGELY_WIDGETS[widget]
+    })
+  }
+
 
   return (
     <div className={styles.compareSectionMain}>
 
       <form className={styles.compareUserInfo} onSubmit={handleSubmit}>
         
+      <TextField className={styles.compareUserInfoItem} 
+          id="outlined-basic" 
+          label="Client Id" 
+          variant="outlined"
+          value={oauthClient}
+          required
+          onChange={handleClientChange} />
+
+        <TextField className={styles.compareUserInfoItem} 
+          id="outlined-basic" 
+          label="API Endpoint" 
+          variant="outlined"
+          value={apiEndPoint}
+          required
+          onChange={handleApiEndPointChange} />
+
+        <TextField className={styles.compareUserInfoItem} 
+          id="outlined-basic" 
+          label="Access token" 
+          variant="outlined"
+          value={accessToken}
+          required
+          onChange={handleAccessTokenChange} />
+
+        <TextField className={styles.compareUserInfoItem} 
+          id="outlined-basic" 
+          label="AES Key" 
+          variant="outlined"
+          value={aesKey}
+          required
+          onChange={handleAesKeyChange} />
+
+        <TextField className={styles.compareUserInfoItem} 
+          id="outlined-basic" 
+          label="IV" 
+          variant="outlined"
+          value={iv}
+          required
+          onChange={handleIvChange} />
+
         <TextField className={styles.compareUserInfoItem} 
           id="outlined-basic" 
           label="Utility User Id" 
@@ -124,6 +213,15 @@ function CompareSectionComponent({id}) {
           </Select>
         </FormControl>
 
+        <Button className={styles.compareUserInfoItem} 
+          type="submit" variant="contained" color="primary">
+          Init SDK
+        </Button>
+
+      </form>
+
+      { initDone ?
+      <form onSubmit={renderWidget}>
         <FormControl className={styles.compareUserInfoItem}>
           <InputLabel id="widget-type">Bidgely Widget</InputLabel>
           <Select
@@ -141,24 +239,23 @@ function CompareSectionComponent({id}) {
               })
             }
           </Select>
-        </FormControl>
+        </FormControl> 
 
-        <Button className={styles.compareUserInfoItem} 
+         <Button className={styles.compareUserInfoItem} 
           type="submit" variant="contained" color="primary">
-          Select
+          Render Widget
         </Button>
-
-      </form>
+        </form> : <></>
+      }
       
       { error && 
-        <div>
-        </div>
+        <div> {error} </div>
       }
 
-      { loading && <CircularProgress/>}
+      { loading && <CircularProgress/> }
       
-      { <bidgely-usage-insights id={id}></bidgely-usage-insights>
-        
+      { !loading && 
+        <div className="widget-container" ref={containerRef}></div>
       }
 
     </div>
