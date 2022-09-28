@@ -46,7 +46,7 @@ function AppHeader() {
             <CCollapse className="header-collapse" visible={visible}>
               <CHeaderNav>
                 <CNavItem className="nav">
-                  <Link to="/" onClick={() => window.location.reload()} active>Home</Link>
+                  <Link to="/" onClick={() => window.location.href = "/"} active>Home</Link>
                 </CNavItem>
                 <CNavItem className="nav">
                   <Link to="/compare">Compare</Link>

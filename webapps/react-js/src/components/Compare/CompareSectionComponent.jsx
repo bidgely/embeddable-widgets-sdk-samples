@@ -76,7 +76,11 @@ function CompareSectionComponent({id}) {
       accountType,
       false).then(resp => {
 
+        console.log(`Test`, resp);
+
         setIsLoading(false)
+        setError(null)
+
         if (resp.messageType !== "SUCCESS") {
           setInitDone(false)
           setError(resp.data)
@@ -91,6 +95,7 @@ function CompareSectionComponent({id}) {
   }
 
   const removeWidget = () => {
+    if (!containerRef) return
     const container = containerRef.current
     while (container.firstChild) {
       container.removeChild(container.firstChild);
@@ -248,13 +253,13 @@ function CompareSectionComponent({id}) {
         </form> : <></>
       }
       
-      { error && 
-        <div> {error} </div>
+      { !loading && error && 
+        <div> {JSON.stringify(error)} </div>
       }
 
       { loading && <CircularProgress/> }
       
-      { !loading && 
+      { !loading && !error && 
         <div className="widget-container" ref={containerRef}></div>
       }
 

@@ -82,6 +82,11 @@ function FormPage(props) {
     dispatch(onChangeAuthField(fieldName, fieldValue))
   }
 
+  const navigateToCompare = (event) => {
+    
+    history.push("/compare")
+  }
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -154,12 +159,15 @@ function FormPage(props) {
 
   return (
     <div className="sdk-input">
+
       <CForm
         className="sdk-input-form g-3 needs-validation"
         noValidate
         validated={validated}
         onSubmit={handleSubmit}
       >
+      <div className="sdk-input-header">My Dashboard</div>
+
         <CRow className="mb-3">
           <CFormLabel htmlFor="oauthClient" className="col-sm-2 col-form-label">
             Oauth Client Id *:
@@ -168,7 +176,6 @@ function FormPage(props) {
             <CFormInput
               type="text"
               defaultValue={oauthClient}
-              feedbackValid="Looks good!"
               id="oauthClient"
               onChange={handleOauthChange}
               required
@@ -184,7 +191,6 @@ function FormPage(props) {
             <CFormInput
               type="text"
               defaultValue={apiEndPoint}
-              feedbackValid="Looks good!"
               id={apiEndPoint}
               onChange={(e) => {
                 setApiEndPoint(e.target.value);
@@ -203,7 +209,6 @@ function FormPage(props) {
             <CFormInput
               type="text"
               defaultValue={accessToken}
-              feedbackValid="Looks good!"
               id={accessToken}
               onChange={(e) => {
                 setAccessToken(e.target.value);
@@ -222,7 +227,6 @@ function FormPage(props) {
             <CFormInput
               type="text"
               defaultValue={aesKey}
-              feedbackValid="Looks good!"
               id={aesKey}
               onChange={(e) => {
                 setAesKey(e.target.value);
@@ -241,7 +245,6 @@ function FormPage(props) {
             <CFormInput
               type="text"
               defaultValue={iv}
-              feedbackValid="Looks good!"
               id={iv}
               onChange={(e) => {
                 setIv(e.target.value);
@@ -260,7 +263,6 @@ function FormPage(props) {
             <CFormInput
               type="text"
               defaultValue={userId}
-              feedbackValid="Looks good!"
               id={userId}
               onChange={(e) => {
                 setUserId(e.target.value);
@@ -279,7 +281,6 @@ function FormPage(props) {
             <CFormInput
               type="text"
               defaultValue={csrId}
-              feedbackValid="Looks good!"
               id={csrId}
               onChange={(e) => {
                 setCsrId(e.target.value);
@@ -340,7 +341,7 @@ function FormPage(props) {
 
         <CCol xs={12}>
           <CButton color="primary" type="submit">
-            Submit
+            Take me to my Dashboard
           </CButton>
         </CCol>
       </CForm>
@@ -388,19 +389,19 @@ function FormPage(props) {
         <></>
       )}
 
-      {/* {initialiseWidget && (
-        <InitialiseSdk
-          oauthClient={oauthClient}
-          apiEndPoint={apiEndPoint}
-          accessToken={accessToken}
-          aesKey={aesKey}
-          iv={iv}
-          userId={userId}
-          csrId={csrId}
-          fuelType={fuelType}
-          accountType={accountType}
-        ></InitialiseSdk>
-      )} */}
+    <div className="sdk-compare">
+      <div className="sdk-input-header">Compare Users</div>
+      <div className="sdk-compare-content">
+        <div className="sdk-compare-text">Compare 2 users (same or different) to get deep insights on energy usage</div>
+        <div>
+        <CButton color="primary" onClick={navigateToCompare}>
+          Compare
+        </CButton>
+        </div>
+        
+      </div>
+    </div>
+
     </div>
   );
 }

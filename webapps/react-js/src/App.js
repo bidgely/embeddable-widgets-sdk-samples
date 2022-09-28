@@ -22,7 +22,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={FormPage}/>
             <RouteGuard path="/dashboard" auth={accessToken !== ""} component={TabViewWidgets}/>
-            <RouteGuard path="/compare" auth={accessToken !== ""} component={CompareComponent}/>
+            <RouteGuard path="/compare" auth={true} component={CompareComponent}/>
           </Switch>
         </div>
         <AppFooter />
