@@ -9,12 +9,6 @@ import {
   CCollapse,
   CHeaderNav,
   CNavItem,
-  CNavLink,
-  CDropdown,
-  CDropdownToggle,
-  CDropdownMenu,
-  CDropdownItem,
-  CDropdownDivider,
   CImage,
 } from "@coreui/react";
 
@@ -24,19 +18,14 @@ function AppHeader() {
   const homePath = currentLocation.pathname !== "/" || false;
   const [visible, setVisible] = useState(true);
 
-  const navigate = (path) => {
-    
-  }
-
   return (
-    <div>
-      <CHeader className="App-header">
+      <CHeader fixed className="App-header">
         <CContainer fluid>
           <CImage
             align="end"
             rounded
             src="/images/bidgely-logo.png"
-            width={100}
+            width={120}
             height={50}
           />
           <CHeaderBrand href="/" className="App-Title">
@@ -51,34 +40,11 @@ function AppHeader() {
                 <CNavItem className="nav">
                   <Link to="/compare">Compare</Link>
                 </CNavItem>
-                {/* <CDropdown variant="nav-item">
-                  <CDropdownToggle color="secondary">Switch</CDropdownToggle>
-                  <CDropdownMenu>
-                    <CDropdownItem href="/Dashboard">ELECTRIC</CDropdownItem>
-                    <CDropdownItem href="/">GAS</CDropdownItem>
-                    <CDropdownDivider />
-                    <CDropdownItem href="/">
-                      Something else here other home?
-                    </CDropdownItem>
-                  </CDropdownMenu>
-                </CDropdown> */}
-                {/* <CNavItem>
-                <CNavLink href="/" disabled>
-                  Disabled
-                </CNavLink>
-              </CNavItem> */}
               </CHeaderNav>
-              {/* <CForm className="d-flex">
-              <CFormInput className="me-2" type="search" placeholder="Search" />
-              <CButton type="submit" color="success" variant="outline">
-                Search
-              </CButton>
-            </CForm> */}
             </CCollapse>
           )}
         </CContainer>
       </CHeader>
-    </div>
   );
 }
 

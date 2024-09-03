@@ -1,12 +1,22 @@
+@media screen and (max-width: 900px) {
+  .App-Title { 
+    font-size: 0.75rem;
+  }
+}
+
 .App-Title {
   justify-content: center;
   font-weight: bold;
   /* position: relative;
   right: 40%; */
+
 }
 
 .App-header {
   height: 60px !important;
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
 }
 
 .nav {

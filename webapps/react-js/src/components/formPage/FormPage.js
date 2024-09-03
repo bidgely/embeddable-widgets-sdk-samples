@@ -21,24 +21,6 @@ import { setFormDataToLocalStorage } from "../../utils/LocalStorageUtils";
 import { onChangeAuthField, setSdkInitInfo } from "../../state/reducers/AuthReducer";
 import { setSdkInstance } from "../../state/reducers/BidgelySdkReducer";
 
-function callWhiteList(apiEndPoint, oauthClientId, accessToken) {
-  //to Do Convert this to a input / api solution
-  var ipAddressUrl = apiEndPoint + "/v2.0/whitelist-origin/";
-  const AuthStr = "Bearer " + accessToken;
-  const payload = {
-    clientId: oauthClientId,
-    requestOrigin: "2406:7400:51:e033:b49c:b354:58bb:d09e",
-  };
-  axios
-    .post(ipAddressUrl, payload, { headers: { Authorization: AuthStr } })
-    .then((response) => {
-      console.log("whitelisting is done", response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
 function FormPage(props) {
 
   const dispatch = useDispatch()
@@ -76,7 +58,7 @@ function FormPage(props) {
   }, [])
   
   const history = useHistory();
-  const [responseMessage, setResponseMessgae] = useState();
+  const [responseMessage, setResponseMessage] = useState();
 
   const onChangeField = (fieldName, fieldValue) => {
     dispatch(onChangeAuthField(fieldName, fieldValue))
@@ -105,11 +87,11 @@ function FormPage(props) {
         csrId,
         fuelType,
         accountType,
-        true
+        false
       ).then((data) => {
         onChangeField("SDK_RESPONSE", data);
         if (data.messageType === "SUCCESS") {      
-          setResponseMessgae(data.messageType);
+          setResponseMessage(data.messageType);
           dispatch(setSdkInstance(data.data.instanceId, userId, fuelType, accountType))
           dispatch(setSdkInitInfo(oauthClient,
             apiEndPoint,
@@ -128,7 +110,7 @@ function FormPage(props) {
           //need to handle success styling from timeout to loader
           history.push("/dashboard");
         } else {
-          setResponseMessgae(data?.data?.errorMessage);
+          setResponseMessage(data?.data?.errorMessage);
           console.log(responseMessage);
         }
       });

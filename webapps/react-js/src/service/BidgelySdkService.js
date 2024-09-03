@@ -61,7 +61,6 @@ export function InitialiseBidgelySdk(
                 initParams,
                 (data) => {
                   console.log("BidgelyWebSdk initialize: ", data);
-                  //instanceId = data.instanceId
                   resolve(data);
                 }
               );
