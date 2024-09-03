@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import "./Formpage.css";
 import axios from "axios";
 
-import { InitialiseBidgelySdk } from "../../service/bidgely-sdk-service";
+import { InitialiseBidgelySdk } from "../../service/BidgelySdkService";
 import { setFormDataToLocalStorage } from "../../utils/LocalStorageUtils";
 import { onChangeAuthField, setSdkInitInfo } from "../../state/reducers/AuthReducer";
 import { setSdkInstance } from "../../state/reducers/BidgelySdkReducer";
@@ -104,7 +104,8 @@ function FormPage(props) {
         userId,
         csrId,
         fuelType,
-        accountType
+        accountType,
+        true
       ).then((data) => {
         onChangeField("SDK_RESPONSE", data);
         if (data.messageType === "SUCCESS") {      

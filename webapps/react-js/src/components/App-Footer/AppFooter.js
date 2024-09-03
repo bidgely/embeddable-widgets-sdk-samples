@@ -6,12 +6,8 @@ function AppFooter() {
   return (
     <CFooter className="App-footer">
       <div>
-        <CLink href="https://bidgely.com">Widgets Demo</CLink>
-        <span> 2022 Bidgely&copy;.</span>
-      </div>
-      <div>
-        <span>Powered by </span>
-        <CLink href="https://bidgely.com">Bidgely Widgets</CLink>
+        <span>&nbsp;Powered by </span>
+        <CLink style={{ textDecoration: 'none' }} href="https://bidgely.com">Bidgely&copy;2024</CLink>
       </div>
     </CFooter>
   );

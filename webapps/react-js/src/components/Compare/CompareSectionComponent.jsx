@@ -1,6 +1,6 @@
 import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import React, { useState, useRef } from "react";
-import { InitialiseBidgelySdk } from "../../service/bidgely-sdk-service";
+import { InitialiseBidgelySdk } from "../../service/BidgelySdkService";
 import { ACCOUNT_TYPE, FUEL_TYPE, BIDGELY_WIDGETS, BIDGELY_WIDGET_LABELS } from "../../utils/Constants";
 import styles from "./Compare.module.css"
 
