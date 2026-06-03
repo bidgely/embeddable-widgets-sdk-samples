@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bidgely Widget Host</title>
+  <script>
+    window["bgl-page-load-ts"] = Date.now();
+    window.__webpack_public_path__ = "https://appassets.androidplatform.net/bidgely/";
+  </script>
+  <link rel="preconnect" href="https://static.bidgely.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <style>
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100% !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        overflow-x: hidden !important;
+    }
+    #bidgely-widget-root {
+        width: 100% !important;
+        min-height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .bidgely-widget-slot {
+        width: 100% !important;
+        min-height: 400px !important;
+        display: block !important;
+        flex-shrink: 0 !important;
+    }
+    .bidgely-widget-slot > * {
+        display: block !important;
+        width: 100% !important;
+        min-height: 400px !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="bidgely-widget-root"></div>
+  <script>
+    (function () {
+      var ASSET_BASE = "https://appassets.androidplatform.net/bidgely/";
+      var currentInstanceId = null;
+      var isInitialized = false;
+      var sdkLoadPromise = null;
+      var initPromise = null;
+
+      function forwardToAndroid(msg) {
+        if (window.BidgelyAndroidBridge && window.BidgelyAndroidBridge.onSdkMessage) {
+          window.BidgelyAndroidBridge.onSdkMessage(JSON.stringify(msg));
+        }
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var s = document.createElement("script");
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+
+      function loadSdkBundles() {
+        if (sdkLoadPromise) return sdkLoadPromise;
+        sdkLoadPromise = fetch(ASSET_BASE + "sdk-asset-manifest.json")
+          .then(function (r) { return r.json(); })
+          .then(function (m) {
+            var l = document.createElement("link");
+            l.rel = "stylesheet"; l.href = ASSET_BASE + m.mainCss;
+            document.head.appendChild(l);
+            return loadScript(ASSET_BASE + m.runtime)
+              .then(function () { return loadScript(ASSET_BASE + m.vendor); })
+              .then(function () { return loadScript(ASSET_BASE + m.main); });
+          });
+        return sdkLoadPromise;
+      }
+
+      function sdkReady() { return typeof window.BidgelyWebSdk !== "undefined"; }
+
+      function waitForSdk() {
+        return new Promise(function (resolve) {
+          if (sdkReady()) return resolve();
+          var tries = 0;
+          var t = setInterval(function () {
+            tries++;
+            if (sdkReady() || tries > 200) { clearInterval(t); resolve(); }
+          }, 50);
+        });
+      }
+
+      function buildInitParams(params) {
+        var initParams = {
+          client_id: params.clientId,
+          api_url: params.apiUrl,
+          payload: params.payload,
+          is_embedded: true,
+          renderWidgetsImmediate: params.renderWidgetsImmediate === true ? true : false
+        };
+        if (params.csrId) initParams.csr_id = params.csrId;
+        if (params.requestLocale) initParams.requestLocale = params.requestLocale;
+        if (params.palette) initParams.palette = params.palette;
+        if (params.relayFileDownloads === true) initParams.relayFileDownloads = true;
+        return initParams;
+      }
+
+      window.BidgelyHost = {
+        initialize: function (params) {
+          if (isInitialized) {
+            forwardToAndroid({ messageType: "SUCCESS", data: { instanceId: currentInstanceId } });
+            return;
+          }
+          if (initPromise) return;
+
+          initPromise = loadSdkBundles()
+            .then(waitForSdk)
+            .then(function () {
+              if (!sdkReady()) {
+                var err = { messageType: "ERROR", data: { errorCode: "SDK_LOAD_FAILED", errorMessage: "SDK bundles failed to load" } };
+                forwardToAndroid(err);
+                throw err;
+              }
+              if (window.BidgelyWebSdk.enableDebugMode) window.BidgelyWebSdk.enableDebugMode();
+
+              return new Promise(function(resolve) {
+                window.BidgelyWebSdk.initialize(params.runMode || "PROD", buildInitParams(params), function (data) {
+                  if (data && data.messageType === "SUCCESS" && data.data) {
+                    currentInstanceId = data.data.instanceId;
+                    isInitialized = true;
+                  }
+                  forwardToAndroid(data);
+                  resolve(data);
+                });
+              });
+            }).catch(function(e) {
+                initPromise = null; // Allow retry on failure
+            });
+        },
+
+        renderWidget: function (params) {
+          var self = this;
+          if (!isInitialized) {
+            if (initPromise) {
+               initPromise.then(function() { self.renderWidget(params); });
+               return;
+            }
+            return;
+          }
+
+          var widgetId = params.widgetId;
+          var root = document.getElementById("bidgely-widget-root");
+
+          if (params.clearBefore) {
+            root.innerHTML = "";
+          }
+
+          var elementId = params.elementId;
+          var existing = root.querySelector(widgetId);
+          if (!existing) {
+            var slot = document.createElement("div");
+            slot.className = "bidgely-widget-slot";
+            slot.id = "slot-" + widgetId + "-" + root.children.length;
+            slot.innerHTML = "<" + widgetId + "></" + widgetId + ">";
+            root.appendChild(slot);
+            existing = slot.querySelector(widgetId);
+          }
+
+          var renderParams = {
+            instanceId: params.instanceId || currentInstanceId,
+            widgetId: widgetId,
+            configs: params.configs || {},
+            translations: params.translations || {}
+          };
+          if (elementId) {
+            renderParams.elementId = elementId;
+          }
+
+          function invokeSdkRender() {
+            window.BidgelyWebSdk.renderWidget(renderParams, function (data) {
+              forwardToAndroid(data);
+            });
+          }
+
+          function scheduleRender(attempt) {
+            var el = root.querySelector(widgetId);
+            if (!el) {
+              forwardToAndroid({
+                messageType: "ERROR",
+                data: { errorCode: "ELEMENT_NOT_FOUND", errorMessage: "Missing host element: " + widgetId }
+              });
+              return;
+            }
+            if (el.isConnected && (el.shadowRoot || attempt >= 10)) {
+              invokeSdkRender();
+              return;
+            }
+            if (attempt >= 60) {
+              invokeSdkRender();
+              return;
+            }
+            setTimeout(function () { scheduleRender(attempt + 1); }, 50);
+          }
+
+          customElements.whenDefined(widgetId).then(function () {
+            requestAnimationFrame(function () {
+              setTimeout(function () { scheduleRender(0); }, 0);
+            });
+          }).catch(function () {
+            scheduleRender(0);
+          });
+        },
+
+        clearWidgets: function () {
+          var root = document.getElementById("bidgely-widget-root");
+          if (root) root.innerHTML = "";
+        },
+
+        release: function () {
+          isInitialized = false;
+          currentInstanceId = null;
+          var root = document.getElementById("bidgely-widget-root");
+          if (root) root.innerHTML = "";
+        }
+      };
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+.DS_Store
+.kotlin/
+
+# Synced meraki wc-sdk bundles (run :bidgely-widgets-sdk:syncWcSdkAssets)
+bidgely-widgets-sdk/src/main/assets/bidgely/static/
+bidgely-widgets-sdk/src/main/assets/bidgely/asset-manifest.json
+bidgely-widgets-sdk/src/main/assets/bidgely/sdk-asset-manifest.json
+bidgely-widgets-sdk/src/main/assets/bidgely/*.js
+bidgely-widgets-sdk/src/main/assets/bidgely/*.html
+!bidgely-widgets-sdk/src/main/assets/bidgely/host.html
