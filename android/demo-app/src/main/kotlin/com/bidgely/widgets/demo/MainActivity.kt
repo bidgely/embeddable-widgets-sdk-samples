@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,6 +26,7 @@ import com.bidgely.widgets.BidgelyMessage
 import com.bidgely.widgets.BidgelySdk
 import com.bidgely.widgets.FuelType
 import com.bidgely.widgets.demo.ui.InterleavedFeedScreen
+import com.bidgely.widgets.demo.ui.LandingScreen
 import com.bidgely.widgets.demo.ui.SetupScreen
 import com.bidgely.widgets.demo.ui.WidgetGalleryScreen
 
@@ -35,7 +36,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BidgelyDemoTheme {
-                Surface(modifier = Modifier.statusBarsPadding()) {
+                Surface(modifier = Modifier.statusBarsPadding().navigationBarsPadding()) {
                     BidgelyDemoApp()
                 }
             }
@@ -86,7 +87,7 @@ private fun BidgelyDemoApp() {
                                 when (message) {
                                     is BidgelyMessage.Success -> {
                                         statusMessage = null
-                                        navController.navigate("gallery") {
+                                        navController.navigate("landing") {
                                             popUpTo("setup") { inclusive = false }
                                         }
                                     }
@@ -108,17 +109,25 @@ private fun BidgelyDemoApp() {
                 },
             )
         }
+        composable("landing") {
+            if (!BidgelySdk.isInitialized()) {
+                navController.navigate("setup") {
+                    popUpTo("landing") { inclusive = true }
+                }
+            } else {
+                LandingScreen(
+                    onOpenGallery = { navController.navigate("gallery") },
+                    onOpenInterleavedFeed = { navController.navigate("interleaved") },
+                )
+            }
+        }
         composable("gallery") {
             if (!BidgelySdk.isInitialized()) {
                 navController.navigate("setup") {
                     popUpTo("gallery") { inclusive = true }
                 }
             } else {
-                WidgetGalleryScreen(
-                    onOpenInterleavedFeed = {
-                        navController.navigate("interleaved")
-                    },
-                )
+                WidgetGalleryScreen()
             }
         }
         composable("interleaved") {

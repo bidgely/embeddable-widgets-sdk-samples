@@ -5,12 +5,12 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
 data class DemoConfig(
-    val clientId: String = "uat_avista_widget",
-    val apiUrl: String = "https://avistauatapi.bidgely.com",
-    val accessToken: String = "8cdd903d-1ecc-4991-bb2e-c3d489fddbc4",
-    val aesKey: String = "hemnxfsR//NSjP9o+dV5o6vz3eXkMGEh",
-    val iv: String = "lt9SKKJ0hnWE9Ht+",
-    val userId: String = "_8189733837_2470123017",
+    val clientId: String = "lakevalley-dashboard",
+    val apiUrl: String = "https://api-server-lakevalley-uat.bidgely.com",
+    val accessToken: String = "56b02db5-b83c-4c5c-b75d-3b6eaee03438",
+    val aesKey: String = "Q0q+r2QCduckkOI7+Tjk9hKSjMud9gZM",
+    val iv: String = "OjhG/dLt3J7HMzcm",
+    val userId: String = "005863424_0058634241328915_1328915",
     val csrId: String = "",
     val fuelType: String = "ELECTRIC",
     val accountType: String = "RESIDENTIAL",

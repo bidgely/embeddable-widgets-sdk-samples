@@ -55,6 +55,33 @@
         }
       }
 
+      /**
+       * Normalises an error envelope from BidgelyWebSdk so Android always receives
+       * a well-formed { messageType:"ERROR", data:{ errorCode, errorMessage } }.
+       *
+       * The Web SDK sometimes delivers callbacks with an empty data object ({}).
+       * We try several extraction strategies in priority order:
+       *   1. Flat errorCode / errorMessage already present → use as-is.
+       *   2. Nested data.error.{ code, message } object.
+       *   3. Caller-supplied fallbacks.
+       */
+      function normalizeError(data, fallbackCode, fallbackMsg) {
+        var d = (data && data.data) || {};
+        var code = d.errorCode;
+        var msg  = d.errorMessage;
+        if (!code && d.error && typeof d.error === "object") {
+          code = d.error.code  ? String(d.error.code)    : undefined;
+          msg  = d.error.message ? String(d.error.message) : undefined;
+        }
+        return {
+          messageType: "ERROR",
+          data: {
+            errorCode:    code || fallbackCode || "UNKNOWN_ERROR",
+            errorMessage: msg  || fallbackMsg  || "An unexpected error occurred"
+          }
+        };
+      }
+
       function loadScript(src) {
         return new Promise(function (resolve, reject) {
           var s = document.createElement("script");
@@ -131,13 +158,22 @@
                   if (data && data.messageType === "SUCCESS" && data.data) {
                     currentInstanceId = data.data.instanceId;
                     isInitialized = true;
+                    forwardToAndroid(data);
+                    resolve(data);
+                  } else {
+                    var errMsg = normalizeError(data, "INIT_FAILED", "SDK initialization failed. Check API URL and credentials.");
+                    forwardToAndroid(errMsg);
+                    resolve(errMsg);
                   }
-                  forwardToAndroid(data);
-                  resolve(data);
                 });
               });
             }).catch(function(e) {
                 initPromise = null; // Allow retry on failure
+                // Only forward if the error hasn't already been sent (SDK_LOAD_FAILED path throws
+                // an object with messageType set; unexpected JS errors won't have it).
+                if (!e || !e.messageType) {
+                  forwardToAndroid({ messageType: "ERROR", data: { errorCode: "SDK_LOAD_FAILED", errorMessage: "Failed to load SDK assets. Verify the SDK bundles are included in the APK." } });
+                }
             });
         },
 
@@ -145,9 +181,15 @@
           var self = this;
           if (!isInitialized) {
             if (initPromise) {
-               initPromise.then(function() { self.renderWidget(params); });
-               return;
+              // Wait for init to complete; only proceed if init actually succeeded.
+              initPromise.then(function () {
+                if (isInitialized) self.renderWidget(params);
+                // else: init failed and the error was already forwarded to Android.
+              });
+              return;
             }
+            // initialize() was never called — surface a clear error instead of silently no-op'ing.
+            forwardToAndroid({ messageType: "ERROR", data: { errorCode: "NOT_INITIALIZED", errorMessage: "BidgelyHost.initialize() must be called before renderWidget()" } });
             return;
           }
 
@@ -181,7 +223,9 @@
 
           function invokeSdkRender() {
             window.BidgelyWebSdk.renderWidget(renderParams, function (data) {
-              forwardToAndroid(data);
+              forwardToAndroid(data && data.messageType === "ERROR"
+                ? normalizeError(data, "RENDER_FAILED", "Widget render failed")
+                : data);
             });
           }
 

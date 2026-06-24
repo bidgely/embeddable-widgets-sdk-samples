@@ -1,5 +1,6 @@
 package com.bidgely.widgets.demo.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bidgely.widgets.BidgelyMessage
@@ -27,6 +30,8 @@ import com.bidgely.widgets.compose.BidgelyWidget
 @Composable
 fun InterleavedFeedScreen() {
     var status by remember { mutableStateOf<String?>(null) }
+    var isBlock1Loading by remember { mutableStateOf(true) }
+    var isBlock2Loading by remember { mutableStateOf(true) }
     val scroll = rememberScrollState()
 
     Column(
@@ -47,13 +52,16 @@ fun InterleavedFeedScreen() {
 
         // WebView needs a definite height in a scrollable Column (unlike gallery's weight(1f)).
         key("interleaved-block-1") {
-            BidgelyWidget(
-                widgets = listOf(WidgetTag.HOME_SURVEY),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(720.dp),
-                listener = rememberFeedListener("Block 1") { status = it },
-            )
+            Box(modifier = Modifier.fillMaxWidth().height(720.dp)) {
+                BidgelyWidget(
+                    widgets = listOf(WidgetTag.HOME_SURVEY),
+                    modifier = Modifier.fillMaxSize(),
+                    listener = rememberFeedListener("Block 1", { status = it }) { isBlock1Loading = false },
+                )
+                if (isBlock1Loading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            }
         }
 
         Card(
@@ -73,13 +81,16 @@ fun InterleavedFeedScreen() {
         }
 
         key("interleaved-block-2") {
-            BidgelyWidget(
-                widgets = listOf(WidgetTag.RECOMMENDATION_TOP_TIPS),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(480.dp),
-                listener = rememberFeedListener("Block 2") { status = it },
-            )
+            Box(modifier = Modifier.fillMaxWidth().height(480.dp)) {
+                BidgelyWidget(
+                    widgets = listOf(WidgetTag.RECOMMENDATION_TOP_TIPS),
+                    modifier = Modifier.fillMaxSize(),
+                    listener = rememberFeedListener("Block 2", { status = it }) { isBlock2Loading = false },
+                )
+                if (isBlock2Loading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            }
         }
     }
 }
@@ -88,19 +99,22 @@ fun InterleavedFeedScreen() {
 private fun rememberFeedListener(
     blockLabel: String,
     onStatus: (String) -> Unit,
+    onLoaded: () -> Unit = {},
 ): BidgelyWidgetListener = remember(blockLabel) {
-    feedListener(blockLabel, onStatus)
+    feedListener(blockLabel, onStatus, onLoaded)
 }
 
 private fun feedListener(
     blockLabel: String,
     onStatus: (String) -> Unit,
-): BidgelyWidgetListener = BidgelyWidgetListener { tag, message ->
+    onLoaded: () -> Unit = {},
+): BidgelyWidgetListener = BidgelyWidgetListener { _, message ->
     when (message) {
         is BidgelyMessage.WidgetUiReady -> {
-            onStatus("$blockLabel: $tag ready")
+            onLoaded()
         }
         is BidgelyMessage.Error -> {
+            onLoaded()
             onStatus("$blockLabel error: ${message.errorMessage}")
         }
         else -> Unit

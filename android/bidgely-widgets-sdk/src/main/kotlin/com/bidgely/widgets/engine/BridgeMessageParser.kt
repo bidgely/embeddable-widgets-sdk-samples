@@ -19,8 +19,15 @@ internal object BridgeMessageParser {
                 BidgelyMessage.Success(BidgelySuccessData(instanceId))
             }
             "ERROR" -> {
-                val code = data?.getString("errorCode") ?: "UNKNOWN_ERROR"
-                val message = data?.getString("errorMessage") ?: "Unknown error"
+                // Primary: flat errorCode / errorMessage (our own host.html format).
+                // Fallback: nested data.error.{ code, message } shape some SDK versions emit.
+                val nestedError = data?.getJsonObject("error")
+                val code = data?.getString("errorCode")
+                    ?: nestedError?.getString("code")
+                    ?: "UNKNOWN_ERROR"
+                val message = data?.getString("errorMessage")
+                    ?: nestedError?.getString("message")
+                    ?: "Unknown error"
                 BidgelyMessage.Error(code, message)
             }
             "WIDGET_UI_READY" -> {
@@ -66,5 +73,10 @@ internal object BridgeMessageParser {
         } else {
             null
         }
+    }
+
+    private fun JsonObject.getJsonObject(key: String): JsonObject? {
+        val element = get(key) ?: return null
+        return if (element.isJsonObject) element.asJsonObject else null
     }
 }
